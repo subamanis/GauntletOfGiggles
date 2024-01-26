@@ -1,35 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {useEffect, useState} from 'react'
+import {ref, onValue} from "firebase/database";
+import { realTimeDatabase} from "./firebase/firebaseInit.ts";
+
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [count, setCount] = useState(0)
+    // console.log("myFirebaseInit", myFirebaseInit);
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Gauntlet of Giggles</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+
+    // onValue(starCountRef, (snapshot) => {
+    //     console.log(snapshot.val());
+    //     const data = Number(snapshot.val());
+    //     setCount(data);
+    // });
+
+    // const dbRef = ref(getDatabase());
+    // get(child(dbRef, `sessions/1234`)).then((snapshot) => {
+    //     if (snapshot.exists()) {
+    //         console.log(snapshot.val());
+    //     } else {
+    //         console.log("No data available");
+    //     }
+    // }).catch((error) => {
+    //     console.error(error);
+    // });
+
+    useEffect(() => {
+        // console.log(realTimeDatabase);
+        const sessionId = 1234;
+
+        const starCountRef = ref(realTimeDatabase, `sessions/${sessionId}`);
+
+        return onValue(starCountRef, (snapshot) => {
+            console.log("yolo")
+            console.log(snapshot.val());
+            setCount(snapshot.val().blue);
+        });
+    }, []);
+
+    return (
+        <>
+            <button>
+                count is yolo {count}
+            </button>
+        </>
+    )
 }
 
 export default App
