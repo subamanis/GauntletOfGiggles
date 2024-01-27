@@ -9,6 +9,7 @@ import LandingPage from './pages/landingpage/LandingPage.tsx';
 import JoinSession from './pages/joinsession/JoinSession.tsx';
 import Petros from './Petros.tsx';
 import ThanasisTest from "./Thanasis.tsx";
+import SessionRoom from './pages/sessionroom/SessionRoom.tsx';
 
 const router = createBrowserRouter([
   {
@@ -25,7 +26,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/join-session/:sessionId",
-        element: <div>Joined room</div>
+        element: <SessionRoom />
+      },
+      {
+        path: "/join-session/:sessionId/color/:colorId",
+        element: <Petros />,
       },
       {
         path: "/mouse-event-test",

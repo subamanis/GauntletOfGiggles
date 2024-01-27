@@ -1,7 +1,8 @@
-import {FC, useEffect, useState} from "react";
+import {FC, useEffect, useMemo, useState} from "react";
 import useMousePosition from "./mouse-position.ts";
 import useMultiplayer from "./multiplayer/useMultiplayer.ts";
 import {InfinityRoom, InfinityStoneColor} from "./multiplayer/infinityTypes.ts";
+import { useParams } from "react-router";
 
 interface Movement {
     x: number;
@@ -24,12 +25,11 @@ interface MiniGame {
     evaluatorFn: (movement: Movement) => MiniGameState;
 }
 
-interface PetrosProps {
-    roomId: string;
-    myStoneColor: InfinityStoneColor;
-}
+const Petros = () => {
+    const {sessionId, colorId} = useParams();
+    const roomId = useMemo(() => sessionId as string , [sessionId]);
+    const myStoneColor = useMemo(() => colorId as InfinityStoneColor , [colorId]);
 
-const Petros: FC<PetrosProps> = ({roomId, myStoneColor}) => {
     const {useGetAvailablePlayersInRoom, joinRoom, useGetPlayerPlaying, changePlayerScore, changePlayerPlaying}
         = useMultiplayer();
 
@@ -67,14 +67,6 @@ const Petros: FC<PetrosProps> = ({roomId, myStoneColor}) => {
     // const [amIPlayingNow, setAmIPlayingNow] = useState<boolean>(false);
 
     useEffect(() => {
-        // THis code needs to be moved somewhere outside
-        const availableStones = useGetAvailablePlayersInRoom(myInfinityRoom);
-        const myStone = availableStones[0];
-        const joinResult = joinRoom(myInfinityRoom, myStone);
-        if (!joinResult) {
-            //TODO: go back.
-        }
-
         setCurrentMiniGame(chooseNextMiniGame());
         setInterval(() => {
             console.log('MiniGame change interval passed');

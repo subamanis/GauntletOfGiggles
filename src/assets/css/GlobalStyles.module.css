@@ -7,6 +7,8 @@
 .flexNoWrap { flex-wrap: nowrap; }
 .flex1 { flex: 1; }
 .flex2 { flex: 2; }
+.flex5 { flex: 5; }
+.flex10 { flex: 10; }
 .gap05 { gap: 0.5em; }
 .gap { gap: 1em; }
 .gap2 { gap: 2em; }
