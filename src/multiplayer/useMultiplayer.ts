@@ -53,3 +53,5 @@ const useMultiplayer = (): useMultiplayerDefinition => {
         changePlayerPlaying,
     }
 }
+
+export default useMultiplayer;
