@@ -1,7 +1,11 @@
 import {useEffect, useState} from 'react'
 import {ref, onValue} from "firebase/database";
 import { realTimeDatabase} from "./firebase/firebaseInit.ts";
-
+import { Outlet } from "react-router-dom";
+import classnames from 'classnames'
+import AppStyles from "./App.module.css"
+import GlobalStyles from "./assets/css/GlobalStyles.module.css"
+import AppHeader from './shared/appheader/AppHeader.tsx';
 
 function App() {
     const [count, setCount] = useState(0)
@@ -39,11 +43,18 @@ function App() {
     }, []);
 
     return (
-        <>
-            <button>
+        <div className={classnames(AppStyles.container, GlobalStyles.overflowHiddenFullHeight)}>
+            {/* <button>
                 count is yolo {count}
-            </button>
-        </>
+            </button> */}
+            <AppHeader/>
+            <div className={classnames(AppStyles.outlet)}>
+                <Outlet />
+            </div>
+            <div className={classnames(AppStyles.outlet)}>
+                <Outlet />
+            </div>
+        </div>
     )
 }
 

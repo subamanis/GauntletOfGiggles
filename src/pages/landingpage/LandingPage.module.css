@@ -1,0 +1,5 @@
+.container { height: 80%; padding: 1em 2em; }
+.button { border-radius: 8px; color: white; text-align: center; }
+.button:hover { cursor: pointer; filter: brightness(110%); }
+.createButton { background-color: rgb(89, 226, 43); }
+.joinButton { background-color: rgb(31, 181, 223); }
