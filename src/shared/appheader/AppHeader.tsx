@@ -11,7 +11,14 @@ const AppHeader = () => {
                 )}
             >
                 <div className={classnames(GlobalStyles.flex1)}/>
-                <div className={classnames()}>Gauntlet of Giggles: Laugh or Snap</div>
+            <div 
+            className={classnames(
+                GlobalStyles.flex, GlobalStyles.flexDirectionColumn
+                )}
+            >
+                <div className={classnames()}>Gauntlet of Giggles</div>
+                <div className={classnames(AppHeaderStyles.headerSecondaryText)}>Laugh or Snap</div>
+                </div>
                 <div className={classnames(GlobalStyles.flex1)}/>
                 <Link
                     to="/mouse-event-test"

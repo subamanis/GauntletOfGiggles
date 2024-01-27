@@ -1,1 +1,7 @@
-.container { background-color: rgb(134, 134, 217); }
+.input { padding: 0.5em 1em; }
+.button { border-radius: 5px; color: white; padding: 0.5em 1em; }
+.button:hover { cursor: pointer; filter: brightness(110%) }
+.buttonDisabled { opacity: 0.4; }
+.buttonDisabled:hover { cursor: default; filter: none; }
+.joinButton { background-color: rgb(101, 225, 35); }
+.backButton { background-color: rgb(176, 181, 174); }

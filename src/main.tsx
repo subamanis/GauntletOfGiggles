@@ -28,6 +28,10 @@ const router = createBrowserRouter([
         element: <JoinSession />,
       },
       {
+        path: "/join-session/:sessionId",
+        element: <div>Joined room</div>
+      },
+      {
         path: "/mouse-event-test",
         element: <Petros />,
       },

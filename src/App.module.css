@@ -1,5 +1,17 @@
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 a { all: unset; }
 body { background-color: black; margin: 0; overflow: hidden; }
 input { border: unset; outline: unset; }
 .container { background-color: rgb(228, 244, 244); height: 100vh; overflow: hidden; width: 100%; }
-.outlet { height: 100vh; overflow: hidden; }
+.outlet { height: 100vh; margin: 1em 0em 0em; overflow: hidden; }
