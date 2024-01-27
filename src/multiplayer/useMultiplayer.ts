@@ -1,13 +1,14 @@
 import {
     InfinityRoom,
     InfinityRoomData,
-    InfinityStoneColor,
+    InfinityStoneColor, PlayerPlaying,
     PlayerScore,
     RealtimeDatabasePaths,
     RoomState
 } from "./infinityTypes.ts";
 import {realTimeDatabase} from "../firebase/firebaseInit.ts";
-import {DatabaseReference, get, ref, set, update} from "firebase/database";
+import {DatabaseReference, get, onValue, ref, set, update} from "firebase/database";
+import {useEffect, useMemo, useState} from "react";
 
 interface useMultiplayerDefinition {
     createRoom: () => Promise<InfinityRoom>;
@@ -52,11 +53,42 @@ const useMultiplayer = (): useMultiplayerDefinition => {
     };
 
     const useGetRoomState = (room: InfinityRoom) => {
-        return RoomState.WaitingForPlayers;
+        const [roomStateFromServer, setRoomStateFromServer] = useState<RoomState>(RoomState.NotStarted)
+        const roomPath = useMemo(() => {
+            return ref(realTimeDatabase, `${RealtimeDatabasePaths.rooms}/${room.roomId}/RoomState`);
+        }, [room.roomId]);
+
+        useEffect(() => {
+            return onValue(roomPath, (snapshot) => {
+                const roomState = snapshot.val() as RoomState;
+                console.log("useMultiplayer", `Room ${room.roomId} changed state to ${roomState}`);
+                setRoomStateFromServer(roomState);
+            });
+        }, [room.roomId, roomPath]);
+
+        return roomStateFromServer;
     };
 
     const useGetPlayerPlaying = (room: InfinityRoom, playerColor: InfinityStoneColor) => {
-        return false;
+        const [playerPlayingFromServer, setPlayerPlayingFromServer] = useState<boolean>(false);
+        const playerPlaying =
+            useMemo(() => {
+                return `${playerColor}Playing` as PlayerPlaying;
+            }, [playerColor]);
+        const playerPlayingPath =
+            useMemo(() => {
+                return ref(realTimeDatabase, `${RealtimeDatabasePaths.rooms}/${room.roomId}/${playerPlaying}`);
+            }, [room.roomId, playerPlaying]);
+
+        useEffect(() => {
+            return onValue(playerPlayingPath, (snapshot) => {
+                const playerPlaying = snapshot.val() as boolean;
+                console.log("useMultiplayer", `Player ${playerColor} playing changed to ${playerPlaying}`);
+                setPlayerPlayingFromServer(playerPlaying);
+            });
+        }, [room.roomId, playerPlayingPath, playerColor]);
+
+        return playerPlayingFromServer;
     }
 
     const changeRoomState = (room: InfinityRoom, state: RoomState) => {

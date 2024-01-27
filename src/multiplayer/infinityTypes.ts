@@ -16,6 +16,7 @@ export interface InfinityRoom {
 }
 
 export enum RoomState {
+    NotStarted = 'notStarted',
     WaitingForPlayers = 'waitingForPlayers',
     InProgress = 'inProgress',
     FinishedSuccess = 'finishedSuccess',
