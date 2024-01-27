@@ -5,7 +5,6 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import CreateSession from './pages/createsession/CreateSession.tsx';
 import LandingPage from './pages/landingpage/LandingPage.tsx';
 import JoinSession from './pages/joinsession/JoinSession.tsx';
 import Petros from './Petros.tsx';
@@ -19,10 +18,6 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <LandingPage />,
-      },
-      {
-        path: "/create-session",
-        element: <CreateSession />,
       },
       {
         path: "/join-session",

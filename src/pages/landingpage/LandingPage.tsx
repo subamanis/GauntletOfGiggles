@@ -10,10 +10,9 @@ const LandingPage = () => {
                 LandingPageStyles.container, GlobalStyles.flex, GlobalStyles.flexDirectionColumn, GlobalStyles.gap
                 )}
             >
-                <Link
-                    to="/create-session"
+                <div
                     className={classnames(LandingPageStyles.button, LandingPageStyles.createButton, GlobalStyles.flex1, GlobalStyles.centerVertical)}
-                >Create Session</Link>
+                >Create Session</div>
                 <Link
                     to="/join-session"
                     className={classnames(LandingPageStyles.button, LandingPageStyles.joinButton, GlobalStyles.flex1, GlobalStyles.centerVertical)}
