@@ -16,7 +16,7 @@ const Petros: FC = () => {
         {id: 2, name: "Giggle Y Axis", duration: 3.0, score: 1},
         {id: 3, name: "Touch 2 Points", duration: 3.0, score: 1},
     ]
-    const currentMiniGame: MiniGame = minigames[0];
+    let currentMiniGame: MiniGame = minigames[0];
 
     // const minigames:
 

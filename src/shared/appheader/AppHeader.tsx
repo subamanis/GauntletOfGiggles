@@ -13,6 +13,10 @@ const AppHeader = () => {
                 <div className={classnames(GlobalStyles.flex1)}/>
                 <div className={classnames()}>Gauntlet of Giggles: Laugh or Snap</div>
                 <div className={classnames(GlobalStyles.flex1)}/>
+                <Link
+                    to="/mouse-event-test"
+                    className={classnames(AppHeaderStyles.button, GlobalStyles.centerVertical)}
+                >Test</Link>
             </div>)
 }
 
