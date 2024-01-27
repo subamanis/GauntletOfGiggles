@@ -22,4 +22,14 @@ export enum RoomState {
     FinishedFailure = 'finishedFailure',
 }
 
-// export enum RealtimeDatabase
+export type InfinityRoomData = {
+    [key in PlayerPlaying]: boolean
+} & {
+    [key in PlayerScore]: number;
+} & {
+    RoomState: RoomState;
+};
+
+export enum RealtimeDatabasePaths {
+    rooms = 'rooms',
+}
