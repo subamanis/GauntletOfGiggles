@@ -1,16 +1,27 @@
 import {FC, useEffect, useState} from "react";
 import useMousePosition from "./mouse-position.ts";
 import useMultiplayer from "./multiplayer/useMultiplayer.ts";
-import {onValue, ref} from "firebase/database";
-import {realTimeDatabase} from "./firebase/firebaseInit.ts";
 import {InfinityRoom, InfinityStoneColor} from "./multiplayer/infinityTypes.ts";
+
+interface Movement {
+    x: number;
+    y: number;
+    lastX: number;
+    lastY: number;
+}
+
+enum MiniGameState {
+    PLAYING = 0,
+    WON = 1,
+    LOST = 2
+}
 
 interface MiniGame {
     id: number
     name: string;
     duration: number;
     score: number;
-    evaluatorFn: () => void;
+    evaluatorFn: (movement: Movement) => MiniGameState;
 }
 
 interface PetrosProps {
@@ -21,6 +32,28 @@ interface PetrosProps {
 const Petros: FC<PetrosProps> = ({roomId, myStoneColor}) => {
     const {useGetAvailablePlayersInRoom, joinRoom, useGetPlayerPlaying, changePlayerScore, changePlayerPlaying}
         = useMultiplayer();
+
+    const evaluateXAxisGiggleGame = (movement: Movement): MiniGameState => {
+        if (movement.x > movement.lastX) {
+            console.log("right");
+        } else if (movement.x < movement.lastX) {
+            console.log("left");
+        }
+        return MiniGameState.PLAYING;
+    }
+
+    const evaluateYAxisGiggleGame = (movement: Movement): MiniGameState => {
+        if (movement.y > movement.lastY) {
+            console.log("up");
+        } else if (movement.y < movement.lastY) {
+            console.log("down");
+        }
+        return MiniGameState.PLAYING;
+    }
+
+    const evaluateTouch2PointsGame = (movement: Movement): MiniGameState => {
+        return MiniGameState.PLAYING;
+    }
 
     const [miniGames, setMiniGames] = useState<MiniGame[]>([
         {id: 1, name: "Giggle X Axis", duration: 3.0, score: 1, evaluatorFn: evaluateXAxisGiggleGame},
@@ -46,11 +79,12 @@ const Petros: FC<PetrosProps> = ({roomId, myStoneColor}) => {
         setInterval(() => {
             console.log('MiniGame change interval passed');
             setCurrentMiniGame(chooseNextMiniGame());
-        }, 3000);
+        }, 4000);
     }, []);
 
     const amIPlayingNow = useGetPlayerPlaying(myInfinityRoom, myStoneColor);
     const movement = useMousePosition(true);
+    currentMiniGame.evaluatorFn(movement);
 
     const chooseNextMiniGame = () : MiniGame => {
         // placeholder, pick x or y giggles only
@@ -65,18 +99,6 @@ const Petros: FC<PetrosProps> = ({roomId, myStoneColor}) => {
 
     const minigameTimeoutResolved = () => {
         console.log("yolo");
-    }
-
-    const evaluateXAxisGiggleGame = () => {
-
-    }
-
-    const evaluateYAxisGiggleGame = () => {
-
-    }
-
-    const evaluateTouch2PointsGame = () => {
-
     }
 
     return (
