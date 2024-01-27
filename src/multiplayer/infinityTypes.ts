@@ -26,11 +26,18 @@ export enum RoomState {
 export type InfinityRoomData = {
     [key in PlayerPlaying]: boolean
 } & {
-    [key in PlayerScore]: number;
-} & {
     RoomState: RoomState;
 };
 
+export type InfinityRoomDataScoresIncrementBy = {
+    [key in PlayerScore]:  object; // For incremental scoring
+}
+
+export type InfinityRoomDataScoresNumber = {
+    [key in PlayerScore]: number;
+}
+
 export enum RealtimeDatabasePaths {
     rooms = 'rooms',
+    scores = 'scores',
 }

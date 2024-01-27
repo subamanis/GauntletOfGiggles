@@ -13,9 +13,10 @@ const ThanasisTest: FC = () => {
         }
     }, [roomInput]);
 
-    const {createRoom, joinRoom, useGetRoomState, useGetPlayerPlaying} = useMultiplayer();
+    const {createRoom, joinRoom, useGetRoomState, useGetPlayerPlaying, changePlayerScore, useGetPlayersScore} = useMultiplayer();
     const roomState = useGetRoomState(infinityRoom);
     const playerPlaying = useGetPlayerPlaying(infinityRoom, infinityColour as InfinityStoneColor);
+    const totalScore = useGetPlayersScore(infinityRoom);
 
     const userClicksCreateRoom = () => {
         createRoom().then(room => {
@@ -43,6 +44,14 @@ const ThanasisTest: FC = () => {
             <div>{JSON.stringify(roomState)}</div>
             <label>Player Playing</label>
             <div>{JSON.stringify(playerPlaying)}</div>
+            <button onClick={() => {
+                void changePlayerScore(infinityRoom, infinityColour as InfinityStoneColor, 1);
+            }}>Change Score
+            </button>
+            <label>
+                Player Total Score
+            </label>
+            <div>{totalScore}</div>
         </div>
     )
 }

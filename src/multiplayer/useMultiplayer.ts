@@ -1,13 +1,13 @@
 import {
     InfinityRoom,
-    InfinityRoomData,
+    InfinityRoomData, InfinityRoomDataScores, InfinityRoomDataScoresNumber, InfinityRoomDataScoresIncrementBy,
     InfinityStoneColor, PlayerPlaying,
     PlayerScore,
     RealtimeDatabasePaths,
     RoomState
 } from "./infinityTypes.ts";
 import {realTimeDatabase} from "../firebase/firebaseInit.ts";
-import {DatabaseReference, get, onValue, ref, set, update} from "firebase/database";
+import {DatabaseReference, get, onValue, ref, set, update, increment} from "firebase/database";
 import {useEffect, useMemo, useState} from "react";
 
 interface useMultiplayerDefinition {
@@ -15,6 +15,7 @@ interface useMultiplayerDefinition {
     useGetAvailablePlayersInRoom: (room: InfinityRoom) => InfinityStoneColor[];
     useGetRoomState: (room: InfinityRoom) => RoomState;
     useGetPlayerPlaying: (room: InfinityRoom, playerColor: InfinityStoneColor) => boolean;
+    useGetPlayersScore: (room: InfinityRoom) => number;
     changeRoomState: (room: InfinityRoom, state: RoomState) => Promise<void>;
     joinRoom: (room: InfinityRoom, asPlayer: InfinityStoneColor) => Promise<boolean>;
     changePlayerScore: (room: InfinityRoom, playerColor: InfinityStoneColor, increment: number) => Promise<void>;
@@ -115,13 +116,37 @@ const useMultiplayer = (): useMultiplayerDefinition => {
         const roomPath = ref(realTimeDatabase, `${RealtimeDatabasePaths.rooms}/${room.roomId}`);
         return update(roomPath, {
                 [playerScore]: 0,
-            } as Pick<InfinityRoomData, PlayerScore>
+            } as Pick<InfinityRoomDataScoresNumber, PlayerScore>
         );
     };
 
-    const changePlayerScore = (room: InfinityRoom, playerColor: InfinityStoneColor, increment: number) => {
+    const changePlayerScore = (room: InfinityRoom, playerColor: InfinityStoneColor, incrementBy: number) => {
         console.log("useMultiplayer", `Player ${playerColor} score changed by ${increment}`);
+        const playerScore: PlayerScore = `${playerColor}Score` as PlayerScore;
+        const roomPath = ref(realTimeDatabase, `${RealtimeDatabasePaths.rooms}/${room.roomId}/scores`);
+        return update(roomPath, {
+                [playerScore]: increment(incrementBy),
+            } as Pick<InfinityRoomDataScoresIncrementBy, PlayerScore>
+        );
     };
+
+    const useGetPlayersScore = (room: InfinityRoom) => {
+        const [playersScoreFromServer, setPlayersScoreFromServer] = useState<number>(0);
+        const roomPath = useMemo(() => {
+            return ref(realTimeDatabase, `${RealtimeDatabasePaths.rooms}/${room.roomId}/scores`);
+        }, [room.roomId]);
+
+        useEffect(() => {
+            return onValue(roomPath, (snapshot) => {
+                const scores = snapshot.val() as InfinityRoomDataScoresNumber;
+                const playersScore  = Object.values(scores).reduce((accumulator, currentValue) => accumulator + currentValue);
+                console.log("useMultiplayer", `Room ${room.roomId} changed score to ${playersScore}`);
+                setPlayersScoreFromServer(playersScore);
+            });
+        }, [room.roomId, roomPath]);
+
+        return playersScoreFromServer;
+    }
 
     const changePlayerPlaying = (room: InfinityRoom, playerColor: InfinityStoneColor, playing: boolean) => {
         console.log("useMultiplayer", `Player ${playerColor} playing changed to ${playing}`);
@@ -136,6 +161,7 @@ const useMultiplayer = (): useMultiplayerDefinition => {
         changeRoomState,
         joinRoom,
         changePlayerScore,
+        useGetPlayersScore,
         changePlayerPlaying,
     }
 }
