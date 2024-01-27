@@ -1,35 +1,25 @@
 import GlobalStyles from "../../assets/css/GlobalStyles.module.css"
 import AppHeaderStyles from "./AppHeader.module.css"
 import classnames from 'classnames'
-import { Link } from "react-router-dom";
+import {NavLink} from "react-router-dom";
 
 const AppHeader = () => {
     return (
-            <div 
+        <div
             className={classnames(
                 AppHeaderStyles.container, GlobalStyles.flex, GlobalStyles.gap
+            )}
+        >
+            <NavLink
+                to={"/"}
+                className={classnames(
+                    GlobalStyles.flex, GlobalStyles.flexDirectionColumn
                 )}
             >
-                <Link
-                    to="/thanasis"
-                    className={classnames(AppHeaderStyles.button, GlobalStyles.centerVertical)}
-                >Thanasis</Link>
-                <div className={classnames(GlobalStyles.flex1)}/>
-            <div 
-            className={classnames(
-                GlobalStyles.flex, GlobalStyles.flexDirectionColumn
-                )}
-            >
-
                 <div className={classnames()}>Gauntlet of Giggles</div>
                 <div className={classnames(AppHeaderStyles.headerSecondaryText)}>Laugh or Snap</div>
-                </div>
-                <div className={classnames(GlobalStyles.flex1)}/>
-                <Link
-                    to="/mouse-event-test"
-                    className={classnames(AppHeaderStyles.button, GlobalStyles.centerVertical)}
-                >Petros</Link>
-            </div>)
+            </NavLink>
+        </div>)
 }
 
 export default AppHeader;
