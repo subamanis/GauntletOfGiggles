@@ -28,9 +28,9 @@ const Petros: FC<PetrosProps> = ({roomId}) => {
     ]);
     const [myInfinityRoom] = useState<InfinityRoom>({roomId});
     const [currentMiniGame, setCurrentMiniGame] = useState<MiniGame>(miniGames[0]);
+    const [amIPlayingNow, setAmIPlayingNow] = useState<boolean>(false);
 
     useEffect(() => {
-        // const
         const availableStones = useGetAvailablePlayersInRoom(myInfinityRoom);
         const myStone = availableStones[0];
         const joinResult = joinRoom(myInfinityRoom, myStone);
@@ -45,12 +45,6 @@ const Petros: FC<PetrosProps> = ({roomId}) => {
         }, 3000);
 
         const starCountRef = ref(realTimeDatabase, `sessions/1234`);
-
-        // return onValue(starCountRef, (snapshot) => {
-        //     console.log("petros")
-        //     console.log(snapshot.val());
-        //     setCount(snapshot.val().blue);
-        // });
 
     }, []);
 
