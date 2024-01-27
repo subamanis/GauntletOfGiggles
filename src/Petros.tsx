@@ -3,7 +3,7 @@ import useMousePosition from "./mouse-position.ts";
 import useMultiplayer from "./multiplayer/useMultiplayer.ts";
 import {onValue, ref} from "firebase/database";
 import {realTimeDatabase} from "./firebase/firebaseInit.ts";
-import {InfinityRoom} from "./multiplayer/infinityTypes.ts";
+import {InfinityRoom, InfinityStoneColor} from "./multiplayer/infinityTypes.ts";
 
 interface MiniGame {
     id: number
@@ -15,10 +15,11 @@ interface MiniGame {
 
 interface PetrosProps {
     roomId: string;
+    myStoneColor: InfinityStoneColor;
 }
 
-const Petros: FC<PetrosProps> = ({roomId}) => {
-    const {useGetAvailablePlayersInRoom, joinRoom, changePlayerScore, changePlayerPlaying}
+const Petros: FC<PetrosProps> = ({roomId, myStoneColor}) => {
+    const {useGetAvailablePlayersInRoom, joinRoom, useGetPlayerPlaying, changePlayerScore, changePlayerPlaying}
         = useMultiplayer();
 
     const [miniGames, setMiniGames] = useState<MiniGame[]>([
@@ -26,11 +27,14 @@ const Petros: FC<PetrosProps> = ({roomId}) => {
         {id: 2, name: "Giggle Y Axis", duration: 3.0, score: 1, evaluatorFn: evaluateYAxisGiggleGame},
         {id: 3, name: "Touch 2 Points", duration: 3.0, score: 1, evaluatorFn: evaluateTouch2PointsGame},
     ]);
+    //Remove these when move
     const [myInfinityRoom] = useState<InfinityRoom>({roomId});
+    const [myStone] = useState<InfinityStoneColor>();
     const [currentMiniGame, setCurrentMiniGame] = useState<MiniGame>(miniGames[0]);
-    const [amIPlayingNow, setAmIPlayingNow] = useState<boolean>(false);
+    // const [amIPlayingNow, setAmIPlayingNow] = useState<boolean>(false);
 
     useEffect(() => {
+        // THis code needs to be moved somewhere outside
         const availableStones = useGetAvailablePlayersInRoom(myInfinityRoom);
         const myStone = availableStones[0];
         const joinResult = joinRoom(myInfinityRoom, myStone);
@@ -43,11 +47,9 @@ const Petros: FC<PetrosProps> = ({roomId}) => {
             console.log('MiniGame change interval passed');
             setCurrentMiniGame(chooseNextMiniGame());
         }, 3000);
-
-        const starCountRef = ref(realTimeDatabase, `sessions/1234`);
-
     }, []);
 
+    const amIPlayingNow = useGetPlayerPlaying(myInfinityRoom, myStoneColor);
     const movement = useMousePosition(true);
 
     const chooseNextMiniGame = () : MiniGame => {
