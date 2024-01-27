@@ -3,7 +3,7 @@ import SessionRoomStyles from "./SessionRoom.module.css"
 import classnames from 'classnames'
 import {useNavigate, useParams} from 'react-router-dom'
 import useMultiplayer from "../../multiplayer/useMultiplayer";
-import {InfinityRoom, InfinityStoneColor} from "../../multiplayer/infinityTypes"
+import {InfinityStoneColor} from "../../multiplayer/infinityTypes"
 
 enum InfinityStoneColorDisplayEnum {
     red = "Reality Stone",
@@ -29,11 +29,10 @@ const SessionRoom = () => {
     const {useGetAvailablePlayersInRoom, joinRoom}
         = useMultiplayer();
 
-    const myInfinityRoom: InfinityRoom = {roomId: roomId!}
-    const availableStones = useGetAvailablePlayersInRoom(myInfinityRoom);
+    const availableStones = useGetAvailablePlayersInRoom(roomId!);
 
     const onStoneSelect = (selectedInfinityStone: InfinityStoneColor) => {
-        joinRoom(myInfinityRoom, selectedInfinityStone)
+        joinRoom(roomId!, selectedInfinityStone)
             .then(() => navigate("color/" + selectedInfinityStone));
     }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import  {useEffect, useState} from 'react';
 import isMobile from "./utils.ts";
 
 const useMousePosition = () => {
@@ -9,8 +9,8 @@ const useMousePosition = () => {
     const [
         mousePosition,
         setMousePosition
-    ] = React.useState({ x: 0, y: 0, lastX: 0, lastY: 0 });
-    React.useEffect(() => {
+    ] = useState({ x: 0, y: 0, lastX: 0, lastY: 0 });
+    useEffect(() => {
         const updateMousePosition = (ev: any) => {
             lastPositionX = currentPositionX;
             lastPositionY = currentPositionY;

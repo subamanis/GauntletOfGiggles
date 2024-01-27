@@ -1,18 +1,14 @@
-import {FC, useMemo, useState} from "react";
+import {FC, useState} from "react";
 import classnames from "classnames";
 import GlobalStyles from "../src/assets/css/GlobalStyles.module.css"
 import useMultiplayer from "./multiplayer/useMultiplayer.ts";
-import {InfinityRoom, InfinityStoneColor, RoomState} from "./multiplayer/infinityTypes.ts";
+import {InfinityStoneColor, RoomState} from "./multiplayer/infinityTypes.ts";
 
 const ThanasisTest: FC = () => {
     const [roomInput, setRoomInput] = useState<string>();
     const [infinityColour, setInfinityColour] = useState<string>();
     const [roomStateWrite, setRoomStateWrite] = useState<string>();
-    const infinityRoom = useMemo<InfinityRoom>(() => {
-        return {
-            roomId: roomInput!,
-        }
-    }, [roomInput]);
+
 
     const {
         createRoom,
@@ -25,19 +21,19 @@ const ThanasisTest: FC = () => {
         changePlayerPlaying,
         useGetAvailablePlayersInRoom,
     } = useMultiplayer();
-    const roomState = useGetRoomState(infinityRoom);
-    const playerPlaying = useGetPlayerPlaying(infinityRoom, infinityColour as InfinityStoneColor);
-    const totalScore = useGetPlayersScore(infinityRoom);
-    const availablePlayersInRoom = useGetAvailablePlayersInRoom(infinityRoom);
+    const roomState = useGetRoomState(roomInput!);
+    const playerPlaying = useGetPlayerPlaying(roomInput!, infinityColour as InfinityStoneColor);
+    const totalScore = useGetPlayersScore(roomInput!);
+    const availablePlayersInRoom = useGetAvailablePlayersInRoom(roomInput!);
 
     const userClicksCreateRoom = () => {
-        createRoom().then(room => {
-            setRoomInput(room.roomId);
+        createRoom().then(roomId => {
+            setRoomInput(roomId);
         });
     };
 
     const userClicksJoinRoom = () => {
-        void joinRoom({roomId: roomInput!}, infinityColour as InfinityStoneColor);
+        void joinRoom(roomInput!, infinityColour as InfinityStoneColor);
     };
 
     return (
@@ -67,20 +63,20 @@ const ThanasisTest: FC = () => {
             }
             }/>
             <button onClick={() => {
-                void changeRoomState(infinityRoom, roomStateWrite! as RoomState);
+                void changeRoomState(roomInput!, roomStateWrite! as RoomState);
             }}>Change Room State
             </button>
             <p/>
             <label>Player Playing</label>
             <div>{JSON.stringify(playerPlaying)}</div>
             <button onClick={() => {
-                void changePlayerPlaying(infinityRoom, infinityColour as InfinityStoneColor, !playerPlaying);
+                void changePlayerPlaying(roomInput!, infinityColour as InfinityStoneColor, !playerPlaying);
             }
             }>Toggle Player Playing
             </button>
             <p/>
             <button onClick={() => {
-                void changePlayerScore(infinityRoom, infinityColour as InfinityStoneColor, 1);
+                void changePlayerScore(roomInput!, infinityColour as InfinityStoneColor, 1);
             }}>Change Score
             </button>
             <p/>

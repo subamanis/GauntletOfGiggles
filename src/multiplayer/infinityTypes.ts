@@ -21,10 +21,6 @@ export  type PlayerPlaying = `${InfinityStoneColor}Playing`;
 
 export  type PlayerScore = `${InfinityStoneColor}Score`;
 
-export interface InfinityRoom {
-    roomId: string;
-}
-
 export enum RoomState {
     NotStarted = 'notStarted',
     WaitingForPlayers = 'waitingForPlayers',
