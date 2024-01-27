@@ -1,8 +1,9 @@
 .centerVertical { display: flex; flex-direction: column; justify-content: center; }
-.overflowHiddenFullHeight { height: 100%; overflow: hidden; }
+.overflowHiddenFullHeight { height: 100%; overflow: hidden; display: flex ; flex-direction: column }
 .overflowAutoFullHeight { height: 100%; overflow: auto; }
 .flex { display: flex; }
 .flexDirectionColumn { flex-direction: column; }
+.justifyContentSpaceEvenly { justify-content: space-evenly; }
 .flexWrap { flex-wrap: wrap; }
 .flexNoWrap { flex-wrap: nowrap; }
 .flex1 { flex: 1; }

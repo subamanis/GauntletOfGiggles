@@ -5,10 +5,10 @@ import classnames from 'classnames'
 import { Link } from 'react-router-dom'
 
 const JoinSession = () => {
-    const [sessionId, setSessionId] = useState<string>("");
+    const [roomId, setroomId] = useState<string>("");
 
-    const handleSessionIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSessionId(event.target.value);
+    const handleroomIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setroomId(event.target.value);
       };
     
     return (
@@ -17,14 +17,14 @@ const JoinSession = () => {
             <div className={classnames(GlobalStyles.flex, GlobalStyles.flex1, GlobalStyles.flexDirectionColumn, GlobalStyles.gap2)}>
                 <div className={classnames(GlobalStyles.flex, GlobalStyles.flexDirectionColumn, GlobalStyles.gap05)}>
                     <div>Room ID:</div>
-                    <input className={classnames(JoinSessionStyles.input)} type="number" value={sessionId} onChange={handleSessionIdChange} />
+                    <input className={classnames(JoinSessionStyles.input)} type="number" value={roomId} onChange={handleroomIdChange} />
                 </div>
                 <div className={classnames(GlobalStyles.flex, GlobalStyles.gap)}>
                     <Link to={"/"} className={classnames(JoinSessionStyles.button, JoinSessionStyles.backButton)}>
                         Back
                     </Link>
                     <div className={classnames(GlobalStyles.flex1)}/>
-                    {sessionId !== "" ? <Link to={sessionId} className={classnames(JoinSessionStyles.button, JoinSessionStyles.joinButton)}>
+                    {roomId !== "" ? <Link to={roomId} className={classnames(JoinSessionStyles.button, JoinSessionStyles.joinButton)}>
                         Join
                     </Link> : 
                     <div className={classnames(JoinSessionStyles.button, JoinSessionStyles.joinButton, JoinSessionStyles.buttonDisabled)}>

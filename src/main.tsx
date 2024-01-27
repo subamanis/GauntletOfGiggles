@@ -10,6 +10,8 @@ import JoinSession from './pages/joinsession/JoinSession.tsx';
 import Petros from './Petros.tsx';
 import ThanasisTest from "./Thanasis.tsx";
 import SessionRoom from './pages/sessionroom/SessionRoom.tsx';
+import GamePage from "./pages/ingame/GamePage.tsx";
+import './index.css'
 
 const router = createBrowserRouter([
   {
@@ -21,16 +23,16 @@ const router = createBrowserRouter([
         element: <LandingPage />,
       },
       {
-        path: "/join-session",
+        path: "/join-room",
         element: <JoinSession />,
       },
       {
-        path: "/join-session/:sessionId",
+        path: "/join-room/:roomId",
         element: <SessionRoom />
       },
       {
-        path: "/join-session/:sessionId/color/:colorId",
-        element: <Petros />,
+        path: "/join-room/:roomId/color/:colorId",
+        element: <GamePage />,
       },
       {
         path: "/mouse-event-test",

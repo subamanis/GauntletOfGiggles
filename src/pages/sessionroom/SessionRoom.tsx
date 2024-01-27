@@ -1,10 +1,9 @@
-import { useState } from "react"
 import GlobalStyles from "../../assets/css/GlobalStyles.module.css"
 import SessionRoomStyles from "./SessionRoom.module.css"
 import classnames from 'classnames'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import useMultiplayer from "../../multiplayer/useMultiplayer";
-import { InfinityRoom, InfinityStoneColor } from "../../multiplayer/infinityTypes"
+import {InfinityRoom, InfinityStoneColor} from "../../multiplayer/infinityTypes"
 
 enum InfinityStoneColorDisplayEnum {
     red = "Reality Stone",
@@ -25,32 +24,31 @@ const infinityStonesDisplayMap: Map<InfinityStoneColor, InfinityStoneColorDispla
 ])
 
 const SessionRoom = () => {
-    const {sessionId} = useParams();
+    const {roomId} = useParams();
     const navigate = useNavigate()
     const {useGetAvailablePlayersInRoom, joinRoom}
         = useMultiplayer();
 
-    const myInfinityRoom: InfinityRoom = {roomId: sessionId!}
+    const myInfinityRoom: InfinityRoom = {roomId: roomId!}
     const availableStones = useGetAvailablePlayersInRoom(myInfinityRoom);
 
     const onStoneSelect = (selectedInfinityStone: InfinityStoneColor) => {
         joinRoom(myInfinityRoom, selectedInfinityStone)
-        .then(() => navigate("color/"+selectedInfinityStone));
+            .then(() => navigate("color/" + selectedInfinityStone));
     }
 
     return (
-            <div className={classnames(GlobalStyles.flex)}>
-                <div className={classnames(GlobalStyles.flex1)}/>
-                {availableStones.length > 0 ? 
-                    <div className={classnames(GlobalStyles.flex, GlobalStyles.flex10, GlobalStyles.flexWrap, GlobalStyles.gap)}>
-                        {availableStones.map(infinityStoneItem => <div className={classnames(SessionRoomStyles.stoneButton)}
-                        onClick={() => onStoneSelect(infinityStoneItem)}>{infinityStonesDisplayMap.get(infinityStoneItem)}</div>)}
-                    </div> : 
-                    <div>No stones available</div>
-                }
-                <div className={classnames(GlobalStyles.flex1)}/>
-            </div>
-            )
+        <div className={classnames(GlobalStyles.flex1,GlobalStyles.flex, GlobalStyles.flexDirectionColumn)}>
+            {availableStones.length > 0 ?
+                <div
+                    className={classnames(GlobalStyles.justifyContentSpaceEvenly, GlobalStyles.flex, GlobalStyles.flexDirectionColumn,GlobalStyles.flex1, GlobalStyles.gap2)}>
+                    {availableStones.map(infinityStoneItem => <div key={infinityStoneItem} className={classnames(GlobalStyles.flex1,SessionRoomStyles.stoneButton)}
+                                                                   onClick={() => onStoneSelect(infinityStoneItem)}>{infinityStonesDisplayMap.get(infinityStoneItem)}</div>)}
+                </div> :
+                <div>No stones available</div>
+            }
+        </div>
+    )
 }
 
 export default SessionRoom;

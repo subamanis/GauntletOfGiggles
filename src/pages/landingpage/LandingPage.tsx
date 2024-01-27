@@ -14,7 +14,7 @@ const LandingPage = () => {
         setShowLoader(true);
         createRoom().then(data => {
             if(data.roomId) {
-                navigate("/join-session/" + data.roomId)
+                navigate("/join-room/" + data.roomId)
             }
         }).finally(() => setShowLoader(false))
     }
@@ -22,7 +22,8 @@ const LandingPage = () => {
     return (
             <div 
             className={classnames(
-                LandingPageStyles.container, GlobalStyles.flex, GlobalStyles.flexDirectionColumn, GlobalStyles.gap
+                GlobalStyles.flex1, GlobalStyles.flex, GlobalStyles.flexDirectionColumn, GlobalStyles.gap,
+                LandingPageStyles.container
                 )}
             >
                 <div
@@ -30,7 +31,7 @@ const LandingPage = () => {
                     className={classnames(LandingPageStyles.button, LandingPageStyles.createButton, GlobalStyles.flex1, GlobalStyles.centerVertical)}
                 >{showLoader ? "Loading..." : "Create Session"}</div>
                 <Link
-                    to="/join-session"
+                    to="/join-room"
                     className={classnames(LandingPageStyles.button, LandingPageStyles.joinButton, GlobalStyles.flex1, GlobalStyles.centerVertical)}
                 >Join Session</Link>
             </div>)

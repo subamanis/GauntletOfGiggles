@@ -6,6 +6,15 @@ export type InfinityStoneColor =
     | "Green"  // Time Stone
     | "Orange" // Soul Stone;
 
+export const GemToImageMap: Record<InfinityStoneColor, string> = {
+    "Red": "Head",
+    "Blue": "LeftHand",
+    "Yellow": "RightHand",
+    "Purple": "LeftLeg",
+    "Green": "RightLeg",
+    "Orange": "Torso",
+}
+
 export const infinityStoneColorsInArray: InfinityStoneColor[] = ["Red", "Blue", "Yellow", "Purple", "Green", "Orange"]; // Hate this
 
 export  type PlayerPlaying = `${InfinityStoneColor}Playing`;
@@ -31,7 +40,7 @@ export type InfinityRoomData = {
 };
 
 export type InfinityRoomDataScoresIncrementBy = {
-    [key in PlayerScore]:  object; // For incremental scoring
+    [key in PlayerScore]: object; // For incremental scoring
 }
 
 export type InfinityRoomDataScoresNumber = {
