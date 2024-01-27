@@ -149,8 +149,14 @@ const useMultiplayer = (): useMultiplayerDefinition => {
     }
 
     const changePlayerPlaying = (room: InfinityRoom, playerColor: InfinityStoneColor, playing: boolean) => {
-        console.log("useMultiplayer", `Player ${playerColor} playing changed to ${playing}`);
+        console.log("useMultiplayer", `Player ${playerColor} playing just changed to ${playing}`);
 
+        const playerPlaying: PlayerPlaying = `${playerColor}Playing` as PlayerPlaying;
+        const roomPath = ref(realTimeDatabase, `${RealtimeDatabasePaths.rooms}/${room.roomId}`);
+        return update(roomPath, {
+                [playerPlaying]: playing,
+            } as Pick<InfinityRoomData, PlayerPlaying>
+        );
     }
 
     return {
