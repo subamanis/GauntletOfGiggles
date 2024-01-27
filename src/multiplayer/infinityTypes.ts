@@ -7,9 +7,9 @@ export type InfinityStoneColor =
     | "Orange" // Soul Stone;
 
 export const GemToImageMap: Record<InfinityStoneColor, string> = {
-    "Red": "Head",
+    "Yellow": "Head",
     "Blue": "LeftHand",
-    "Yellow": "RightHand",
+    "Red": "RightHand",
     "Purple": "LeftLeg",
     "Green": "RightLeg",
     "Orange": "Torso",
