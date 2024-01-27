@@ -37,11 +37,12 @@ const SessionRoom = () => {
     }
 
     return (
-        <div className={classnames(GlobalStyles.flex1,GlobalStyles.flex, GlobalStyles.flexDirectionColumn)}>
+        <div className={classnames(GlobalStyles.flex1, GlobalStyles.flex, GlobalStyles.flexDirectionColumn)}>
             {availableStones.length > 0 ?
                 <div
-                    className={classnames(GlobalStyles.justifyContentSpaceEvenly, GlobalStyles.flex, GlobalStyles.flexDirectionColumn,GlobalStyles.flex1, GlobalStyles.gap2)}>
-                    {availableStones.map(infinityStoneItem => <div key={infinityStoneItem} className={classnames(GlobalStyles.flex1,SessionRoomStyles.stoneButton)}
+                    className={classnames(GlobalStyles.justifyContentSpaceEvenly, GlobalStyles.flex, GlobalStyles.flexDirectionColumn, GlobalStyles.flex1, GlobalStyles.gap2)}>
+                    {availableStones.map(infinityStoneItem => <div key={infinityStoneItem}
+                                                                   className={classnames(GlobalStyles.flex1, SessionRoomStyles.stoneButton)}
                                                                    onClick={() => onStoneSelect(infinityStoneItem)}>{infinityStonesDisplayMap.get(infinityStoneItem)}</div>)}
                 </div> :
                 <div>No stones available</div>

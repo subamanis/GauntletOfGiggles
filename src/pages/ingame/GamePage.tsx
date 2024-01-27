@@ -1,10 +1,10 @@
-import {FC, useEffect, useState} from "react";
+import {FC, useEffect, useMemo, useState} from "react";
 import {useParams} from "react-router-dom";
 import GamePageStyles from "./GamePage.module.css";
 import GlobalStyles from "./../../assets/css/GlobalStyles.module.css"
 import classnames from "classnames";
 import {GemToImageMap, InfinityStoneColor} from "../../multiplayer/infinityTypes.ts";
-import useMultiplayer from "../../multiplayer/useMultiplayer.ts";
+import useMultiplayer, {useYolo} from "../../multiplayer/useMultiplayer.ts";
 import useMousePosition from "../../mouse-position.ts";
 import useMouseTouch from "../../mouse-touch.ts";
 
@@ -20,9 +20,11 @@ const maxAllowedDriftOffsetOnWrongAxis = 130;
 
 const GamePage: FC = () => {
     const {roomId, colorId} = useParams();
-    const infinityColor = colorId as InfinityStoneColor;
+    const infinityColor = useMemo(
+        () => colorId as InfinityStoneColor,
+        [colorId]);
     const imageName = GemToImageMap[infinityColor];
-    const {useGetPlayersScore, useGetPlayerPlaying} = useMultiplayer()
+    const {useGetPlayersScore, useGetPlayerPlaying, changePlayerScore, changePlayerPlaying} = useMultiplayer()
     const currentScore = useGetPlayersScore(roomId!);
     const isCurrentPlayerPlaying = useGetPlayerPlaying(roomId!, infinityColor);
     const mousePosition = useMousePosition();
@@ -34,16 +36,20 @@ const GamePage: FC = () => {
     const [currentMiniGame, setCurrentMiniGame] = useState(MiniGameType.axisMovementY);
     const [isFirstTouch, setIsFirstTouch] = useState(false);
 
-    useEffect(() => {
-        if (!isCurrentPlayerPlaying && mouseTouch.touches > 0) {
-            console.log("LOST");
-        }
-    }, [isCurrentPlayerPlaying, mouseTouch.touches]);
-
     const [distanceForThisActionX, setDistanceForThisActionX] = useState<number>(0)
     const [distanceForThisActionY, setDistanceForThisActionY] = useState<number>(0)
     const [driftOffsetX, setDriftOffsetX] = useState<number>(0)
     const [driftOffsetY, setDriftOffsetY] = useState<number>(0)
+    const [playerLostReason, setPlayerLostReason] = useState<string | null>(null)
+    const [wonThisRound, setWonThisRound] = useState(false);
+
+    useEffect(() => {
+        if (!isCurrentPlayerPlaying && mouseTouch.touches > 0) {
+            if (!playerLostReason && !wonThisRound) {
+                setPlayerLostReason("Touch while not playing" + Math.random());
+            }
+        }
+    }, [isCurrentPlayerPlaying, mouseTouch.touches, playerLostReason, wonThisRound]);
 
     useEffect(() => {
         if (isCurrentPlayerPlaying) {
@@ -55,28 +61,53 @@ const GamePage: FC = () => {
     useEffect(() => {
         if (isCurrentPlayerPlaying) {
             if (currentMiniGame === MiniGameType.axisMovementY) {
-                if (driftOffsetX > maxAllowedDriftOffsetOnWrongAxis) {
-                    console.log("LOST from drift on X");
+                if (driftOffsetX > maxAllowedDriftOffsetOnWrongAxis && !playerLostReason && !wonThisRound) {
+                    setPlayerLostReason("LOST from drift on X" + Math.random());
                 }
 
-                if (distanceForThisActionY > distanceToWin) {
-                    console.log("WON on Y");
+                if (distanceForThisActionY > distanceToWin && !playerLostReason && !wonThisRound) {
+                    setWonThisRound(true);
                 }
             }
         }
-    }, [isCurrentPlayerPlaying, distanceForThisActionX, distanceForThisActionY, currentMiniGame]);
+    }, [isCurrentPlayerPlaying, distanceForThisActionX, distanceForThisActionY, currentMiniGame, driftOffsetX, playerLostReason, wonThisRound]);
+
+    const resetPlayingState = () => {
+        setPlayerLostReason(null);
+        setWonThisRound(false);
+        setDistanceForThisActionX(0);
+        setDistanceForThisActionY(0);
+    };
 
     useEffect(() => {
         if (mouseTouch.touches === 0) {
             setIsFirstTouch(false);
+            setPlayerLostReason(null);
 
             if (!isCurrentPlayerPlaying) {
-                setDistanceForThisActionX(0);
-                setDistanceForThisActionY(0);
+                resetPlayingState();
             }
         }
 
     }, [isCurrentPlayerPlaying, mouseTouch.touches]);
+
+    useEffect(() => {
+        if (wonThisRound) {
+            console.log("Won this round: ", wonThisRound);
+            void changePlayerScore(roomId!, infinityColor, 1);
+            void changePlayerPlaying(roomId!, infinityColor, false);
+            // resetPlayingState();
+        }
+    }, [changePlayerPlaying, changePlayerScore, infinityColor, roomId, wonThisRound]);
+
+    useEffect(() => {
+        if (playerLostReason) {
+            console.log("Player lost reason: ", playerLostReason);
+            void changePlayerScore(roomId!, infinityColor, -1);
+            void changePlayerPlaying(roomId!, infinityColor, false);
+            // resetPlayingState();
+        }
+    }, [changePlayerScore, changePlayerPlaying, infinityColor, roomId, playerLostReason]);
 
     useEffect(() => {
         if (isFirstTouch && mouseTouch.x !== null && mouseTouch.y !== null) {
@@ -128,6 +159,7 @@ const GamePage: FC = () => {
                 <div style={{color: "white"}}>Starting Y : {startingPosition.y}</div>
                 <div style={{color: "white"}}>Drift Offset X : {driftOffsetX}</div>
                 <div style={{color: "white"}}>Drift Offset Y : {driftOffsetY}</div>
+                <div style={{color: "yellow", fontSize: 22}}>Reason : {playerLostReason}</div>
             </div>
         </div>
     )
