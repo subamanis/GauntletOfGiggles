@@ -1,20 +1,41 @@
-import {InfinityRoom, InfinityStoneColor, RoomState} from "./infinityTypes.ts";
+import {InfinityRoom, InfinityRoomData, InfinityStoneColor, RealtimeDatabasePaths, RoomState} from "./infinityTypes.ts";
+import {realTimeDatabase} from "../firebase/firebaseInit.ts";
+import {DatabaseReference, get, ref, set} from "firebase/database";
 
 interface useMultiplayerDefinition {
-    createRoom: () => InfinityRoom;
+    createRoom: () => Promise<InfinityRoom>;
     useGetAvailablePlayersInRoom: (room: InfinityRoom) => InfinityStoneColor[];
     useGetRoomState: (room: InfinityRoom) => RoomState;
-    changeRoomState: (room: InfinityRoom, state: RoomState) => void;
-    joinRoom: (room: InfinityRoom, asPlayer: InfinityStoneColor) => boolean;
-    changePlayerScore: (room: InfinityRoom, playerColor: InfinityStoneColor, increment: number) => void;
-    changePlayerPlaying: (room: InfinityRoom, playerColor: InfinityStoneColor, playing: boolean) => void;
+    changeRoomState: (room: InfinityRoom, state: RoomState) => Promise<void>;
+    joinRoom: (room: InfinityRoom, asPlayer: InfinityStoneColor) => Promise<boolean>;
+    changePlayerScore: (room: InfinityRoom, playerColor: InfinityStoneColor, increment: number) => Promise<void>;
+    changePlayerPlaying: (room: InfinityRoom, playerColor: InfinityStoneColor, playing: boolean) => Promise<void>;
 }
 
 const useMultiplayer = (): useMultiplayerDefinition => {
-    const createRoom = () => {
-        return {
-            roomId: '123',
-        }
+    const createRoom = async () => {
+        let roomExists = false;
+        let roomIdChosen: null | string = null;
+        let roomPath: DatabaseReference | null = null;
+        do {
+            // roomId is always 4 digits and over 1000
+            roomIdChosen = (Math.floor(Math.random() * 9000) + 1000).toString() ;
+            roomPath = ref(realTimeDatabase, `${RealtimeDatabasePaths.rooms}/${roomIdChosen}`);
+            roomExists = await get(roomPath).then((snapshot) => {
+                return snapshot.exists()
+            });
+        } while (roomExists);
+
+
+        return set(roomPath, {
+                RoomState: RoomState.WaitingForPlayers,
+            } satisfies Pick<InfinityRoomData, 'RoomState'>
+        ).then(() => {
+                return {
+                    roomId: roomIdChosen!,
+                } satisfies InfinityRoom;
+            }
+        );
     };
 
     const useGetAvailablePlayersInRoom = (room: InfinityRoom) => {

@@ -51,9 +51,6 @@ function App() {
             <div className={classnames(AppStyles.outlet)}>
                 <Outlet />
             </div>
-            <div className={classnames(AppStyles.outlet)}>
-                <Outlet />
-            </div>
         </div>
     )
 }
