@@ -6,6 +6,7 @@ export type InfinityStoneColor =
     | "Green"  // Time Stone
     | "Orange" // Soul Stone;
 
+export const infinityStoneColorsInArray: InfinityStoneColor[] = ["Red", "Blue", "Yellow", "Purple", "Green", "Orange"]; // Hate this
 
 export  type PlayerPlaying = `${InfinityStoneColor}Playing`;
 

@@ -3,8 +3,6 @@ import classnames from "classnames";
 import GlobalStyles from "../src/assets/css/GlobalStyles.module.css"
 import useMultiplayer from "./multiplayer/useMultiplayer.ts";
 import {InfinityRoom, InfinityStoneColor, RoomState} from "./multiplayer/infinityTypes.ts";
-import {Simulate} from "react-dom/test-utils";
-import playing = Simulate.playing;
 
 const ThanasisTest: FC = () => {
     const [roomInput, setRoomInput] = useState<string>();
@@ -24,11 +22,13 @@ const ThanasisTest: FC = () => {
         changePlayerScore,
         useGetPlayersScore,
         changeRoomState,
-        changePlayerPlaying
+        changePlayerPlaying,
+        useGetAvailablePlayersInRoom,
     } = useMultiplayer();
     const roomState = useGetRoomState(infinityRoom);
     const playerPlaying = useGetPlayerPlaying(infinityRoom, infinityColour as InfinityStoneColor);
     const totalScore = useGetPlayersScore(infinityRoom);
+    const availablePlayersInRoom = useGetAvailablePlayersInRoom(infinityRoom);
 
     const userClicksCreateRoom = () => {
         createRoom().then(room => {
@@ -48,6 +48,9 @@ const ThanasisTest: FC = () => {
             <input value={roomInput} onChange={event => {
                 setRoomInput(event.target.value)
             }}/>
+            <p/>
+            <label>Available Players</label>
+            <div>{JSON.stringify(availablePlayersInRoom)}</div>
             <button onClick={userClicksJoinRoom}>Join Room</button>
             <p/>
             <label>Color</label>
