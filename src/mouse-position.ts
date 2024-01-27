@@ -1,5 +1,7 @@
 import React from 'react';
-const useMousePosition = (includeTouch: boolean) => {
+import isMobile from "./utils.ts";
+
+const useMousePosition = () => {
     let lastPositionX = 0;
     let lastPositionY = 0;
     let currentPositionX = 0;
@@ -9,8 +11,6 @@ const useMousePosition = (includeTouch: boolean) => {
         setMousePosition
     ] = React.useState({ x: 0, y: 0, lastX: 0, lastY: 0 });
     React.useEffect(() => {
-        // const aa = includeTouch;
-
         const updateMousePosition = (ev: any) => {
             lastPositionX = currentPositionX;
             lastPositionY = currentPositionY;
@@ -22,17 +22,19 @@ const useMousePosition = (includeTouch: boolean) => {
             }
             setMousePosition({ x: currentPositionX, y: currentPositionY, lastX: lastPositionX, lastY: lastPositionY});
         };
-        window.addEventListener('mousemove', updateMousePosition);
-        if (includeTouch) {
+        if (isMobile()) {
             window.addEventListener('touchmove', updateMousePosition);
+        } else {
+            window.addEventListener('mousemove', updateMousePosition);
         }
         return () => {
-            window.removeEventListener('mousemove', updateMousePosition);
-            if (includeTouch) {
+            if (isMobile()) {
                 window.removeEventListener('touchmove', updateMousePosition);
+            } else {
+                window.removeEventListener('mousemove', updateMousePosition);
             }
         };
-    }, [includeTouch]);
+    }, []);
     return mousePosition;
 };
 export default useMousePosition;

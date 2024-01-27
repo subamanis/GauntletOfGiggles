@@ -1,8 +1,9 @@
-import {FC, useEffect, useMemo, useState} from "react";
+import {FC, useCallback, useEffect, useMemo, useState} from "react";
 import useMousePosition from "./mouse-position.ts";
 import useMultiplayer from "./multiplayer/useMultiplayer.ts";
 import {InfinityRoom, InfinityStoneColor} from "./multiplayer/infinityTypes.ts";
 import { useParams } from "react-router";
+import useMouseTouch from "./mouse-touch.ts";
 
 interface Movement {
     x: number;
@@ -22,7 +23,7 @@ interface MiniGame {
     name: string;
     duration: number;
     score: number;
-    evaluatorFn: (movement: Movement) => MiniGameState;
+    evaluatorFn: () => MiniGameState;
 }
 
 const Petros = () => {
@@ -33,16 +34,51 @@ const Petros = () => {
     const {useGetAvailablePlayersInRoom, joinRoom, useGetPlayerPlaying, changePlayerScore, changePlayerPlaying}
         = useMultiplayer();
 
-    const evaluateXAxisGiggleGame = (movement: Movement): MiniGameState => {
-        if (movement.x > movement.lastX) {
-            console.log("right");
-        } else if (movement.x < movement.lastX) {
-            console.log("left");
-        }
-        return MiniGameState.PLAYING;
+    const finishMiniGame = (miniGame: MiniGame, hasWon: boolean) => {
+        const a = changePlayerPlaying(myInfinityRoom, myStoneColor, false).then(() => {
+            console.log('Player is not playing anymore');
+        }).catch(() => {
+            console.error('Error updating is playing');
+        });
+
+        changePlayerScore(myInfinityRoom, myStoneColor, currentMiniGame.score).then(() => {
+            console.log('Player updated score by ', currentMiniGame.score);
+        }).catch(() => {
+            console.error('Error updating score');
+        });
+
+        resetState();
     }
 
-    const evaluateYAxisGiggleGame = (movement: Movement): MiniGameState => {
+    const resetState = () => {
+        setDistanceX(0);
+        setDistanceY(0);
+        setFirstTouchCoordinates({x: Number.MAX_SAFE_INTEGER, y: Number.MAX_SAFE_INTEGER});
+        if (!timeoutObj) {
+            console.error('This should not happen, clearing undefined timeout');
+        } else {
+            clearTimeout(timeoutObj);
+        }
+    }
+
+    const evaluateXAxisGiggleGame = () => {
+        if (touch.isTouching && !isPlaying) {
+            return finishMiniGame(currentMiniGame, false);
+            //should not continue (reset state too)
+        }
+
+        if (firstTouchCoordinates.x === Number.MAX_SAFE_INTEGER) {
+            setFirstTouchCoordinates({x: movement.x, y: movement.y});
+        }
+
+        setDistanceX(distanceX + Math.abs(movement.x - movement.lastX));
+        console.log('Distance X: ', distanceX);
+        if (Math.abs(movement.y - firstTouchCoordinates.y) > maxAllowedDriftOffsetOnWrongAxis) {
+            return finishMiniGame(currentMiniGame, false);
+        }
+    }
+
+    const evaluateYAxisGiggleGame = (): MiniGameState => {
         if (movement.y > movement.lastY) {
             console.log("up");
         } else if (movement.y < movement.lastY) {
@@ -51,7 +87,7 @@ const Petros = () => {
         return MiniGameState.PLAYING;
     }
 
-    const evaluateTouch2PointsGame = (movement: Movement): MiniGameState => {
+    const evaluateTouch2PointsGame = (): MiniGameState => {
         return MiniGameState.PLAYING;
     }
 
@@ -61,22 +97,48 @@ const Petros = () => {
         {id: 3, name: "Touch 2 Points", duration: 3.0, score: 1, evaluatorFn: evaluateTouch2PointsGame},
     ]);
     //Remove these when move
+    const [timeoutObj, setTimeoutObj] = useState<NodeJS.Timeout | undefined>(undefined);
+    const [firstTouchCoordinates, setFirstTouchCoordinates]
+        = useState<{ x: number, y: number }>({x: Number.MAX_SAFE_INTEGER, y: Number.MAX_SAFE_INTEGER});
+    const [maxGiggleDistanceToWin] = useState<number>(200);
+    const [maxAllowedDriftOffsetOnWrongAxis] = useState<number>(20);
+    const [distanceX, setDistanceX] = useState<number>(0);
+    const [distanceY, setDistanceY] = useState<number>(0);
     const [myInfinityRoom] = useState<InfinityRoom>({roomId});
     const [myStone] = useState<InfinityStoneColor>();
     const [currentMiniGame, setCurrentMiniGame] = useState<MiniGame>(miniGames[0]);
-    // const [amIPlayingNow, setAmIPlayingNow] = useState<boolean>(false);
+
+    const startChangingMiniGameAtInterval = () => {
+        setTimeout(() => {
+            setCurrentMiniGame(chooseNextMiniGame());
+            console.log('currentMiniGame changed to: ', currentMiniGame);
+            startChangingMiniGameAtInterval();
+        }, 4000);
+    }
 
     useEffect(() => {
         setCurrentMiniGame(chooseNextMiniGame());
-        setInterval(() => {
-            console.log('MiniGame change interval passed');
-            setCurrentMiniGame(chooseNextMiniGame());
-        }, 4000);
+        startChangingMiniGameAtInterval();
     }, []);
 
-    const amIPlayingNow = useGetPlayerPlaying(myInfinityRoom, myStoneColor);
-    const movement = useMousePosition(true);
-    currentMiniGame.evaluatorFn(movement);
+    const isPlaying = useGetPlayerPlaying(myInfinityRoom, myStoneColor);
+    if (isPlaying) {
+        setTimeoutObj(setTimeout(() => {
+            finishMiniGame(currentMiniGame, false);
+        }, 3000));
+    }
+    const movement = useMousePosition();
+    const touch = useMouseTouch();
+
+    useEffect(() => {
+        if (touch.isTouching && !isPlaying) {
+            finishMiniGame(currentMiniGame, false);
+            //should not continue (reset state too)
+        } else {
+            currentMiniGame.evaluatorFn();
+        }
+
+    }, [touch.isTouching, isPlaying, movement]);
 
     const chooseNextMiniGame = () : MiniGame => {
         // placeholder, pick x or y giggles only
