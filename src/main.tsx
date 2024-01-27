@@ -9,6 +9,7 @@ import CreateSession from './pages/createsession/CreateSession.tsx';
 import LandingPage from './pages/landingpage/LandingPage.tsx';
 import JoinSession from './pages/joinsession/JoinSession.tsx';
 import Petros from './Petros.tsx';
+import ThanasisTest from "./Thanasis.tsx";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
         path: "/mouse-event-test",
         element: <Petros />,
       },
+      {
+        path: "thanasis",
+        element: <ThanasisTest/>,
+      }
     ],
   },
 ]);

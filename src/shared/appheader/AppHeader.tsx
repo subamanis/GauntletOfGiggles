@@ -10,12 +10,17 @@ const AppHeader = () => {
                 AppHeaderStyles.container, GlobalStyles.flex, GlobalStyles.gap
                 )}
             >
+                <Link
+                    to="/thanasis"
+                    className={classnames(AppHeaderStyles.button, GlobalStyles.centerVertical)}
+                >Thanasis</Link>
                 <div className={classnames(GlobalStyles.flex1)}/>
             <div 
             className={classnames(
                 GlobalStyles.flex, GlobalStyles.flexDirectionColumn
                 )}
             >
+
                 <div className={classnames()}>Gauntlet of Giggles</div>
                 <div className={classnames(AppHeaderStyles.headerSecondaryText)}>Laugh or Snap</div>
                 </div>
@@ -23,7 +28,7 @@ const AppHeader = () => {
                 <Link
                     to="/mouse-event-test"
                     className={classnames(AppHeaderStyles.button, GlobalStyles.centerVertical)}
-                >Test</Link>
+                >Petros</Link>
             </div>)
 }
 
