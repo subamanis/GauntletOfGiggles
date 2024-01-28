@@ -1,3 +1,103 @@
 .gamePage {
+    height: 100%;
+    /* overflow: hidden; */
     overscroll-behavior: contain;
+    position: relative;
+    width: 100%;
+}
+
+@media (max-aspect-ratio: 1) {
+    .gamePage {
+        width: fit-content;
+    }
+  }
+
+.glowingGemRed {
+    position: absolute;
+    top: 25em;
+    left: 46.5em;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    box-shadow:
+        inset 0 0 50px #fff,
+        inset 20px 0 80px red,
+        inset -20px 0 80px red,
+        inset 20px 0 300px red,
+        inset -20px 0 300px red,
+        0 0 50px #fff,
+        -10px 0 80px red,
+        10px 0 80px red;
+}
+
+.glowingGemGreen {
+    position: absolute;
+    top: 29em;
+    left: 58.5em;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    box-shadow:
+        inset 0 0 50px #fff,
+        inset 20px 0 80px green,
+        inset -20px 0 80px green,
+        inset 20px 0 300px green,
+        inset -20px 0 300px green,
+        0 0 50px #fff,
+        -10px 0 80px green,
+        10px 0 80px green;
+}
+
+.glowingGemBlue {
+    position: absolute;
+    top: 24em;
+    left: 49.5em;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    box-shadow:
+        inset 0 0 50px #fff,
+        inset 20px 0 80px blue,
+        inset -20px 0 80px blue,
+        inset 20px 0 300px blue,
+        inset -20px 0 300px blue,
+        0 0 50px #fff,
+        -10px 0 80px blue,
+        10px 0 80px blue;
+}
+
+.glowingGemOrange {
+    position: absolute;
+    top: 25em;
+    left: 4em;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    box-shadow:
+        inset 0 0 50px #fff,
+        inset 20px 0 80px rgb(220, 143, 0),
+        inset -20px 0 80px rgb(220, 143, 0),
+        inset 20px 0 300px rgb(220, 143, 0),
+        inset -20px 0 300px rgb(220, 143, 0),
+        0 0 50px #fff,
+        -10px 0 80px rgb(220, 143, 0),
+        10px 0 80px rgb(220, 143, 0),
+}
+
+.glowingGemRed {
+    position: absolute;
+    top: 25em;
+    left: 46.5em;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    box-shadow:
+        inset 0 0 50px #fff,
+        inset 20px 0 80px red,
+        inset -20px 0 80px red,
+        inset 20px 0 300px red,
+        inset -20px 0 300px red,
+        0 0 50px #fff,
+        -10px 0 80px red,
+        10px 0 80px red;
 }
