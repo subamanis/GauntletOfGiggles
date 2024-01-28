@@ -3,6 +3,7 @@ import useMultiplayer from "../../multiplayer/useMultiplayer.ts";
 import useMousePosition from "../../mouse-position.ts";
 import useMouseTouch from "../../mouse-touch.ts";
 import {InfinityStoneColor} from "../../multiplayer/infinityTypes.ts";
+import {randomIntBetween} from "../../utils.ts";
 
 enum MiniGameType {
     axisMovementX = 0,
@@ -64,6 +65,7 @@ const PlayerComponent:FC<PlayerComponentProps> = ({roomId,infinityColor}) => {
 
                 if (distanceForThisActionY > distanceToWin && !playerLostReason && !wonThisRound) {
                     setWonThisRound(true);
+                    playLaughSound();
                 }
             }
         }
@@ -133,6 +135,12 @@ const PlayerComponent:FC<PlayerComponentProps> = ({roomId,infinityColor}) => {
         }
     }, [mousePosition, mouseTouch.touches, startingPosition.x, startingPosition.y]);
 
+    const playLaughSound = () => {
+        const intRand = randomIntBetween(0,2);
+        const audioEl = document.getElementsByClassName("audio-element")[intRand] as HTMLAudioElement;
+        console.log('found audio element: ', audioEl);
+        audioEl.play().then(r => console.log('promise resolve: '+r)).catch(e => console.error(e));
+    }
 
     return <>
         <div style={{color: "white"}}>Score: {currentScore}</div>
@@ -149,6 +157,16 @@ const PlayerComponent:FC<PlayerComponentProps> = ({roomId,infinityColor}) => {
         <div style={{color: "white"}}>Drift Offset X : {driftOffsetX}</div>
         <div style={{color: "white"}}>Drift Offset Y : {driftOffsetY}</div>
         <div style={{color: "yellow", fontSize: 22}}>Reason : {playerLostReason}</div>
+        <button onClick={playLaughSound}>Play sound</button>
+        <audio className="audio-element">
+            <source src="/../../../public/sounds/laugh1.mp3"></source>
+        </audio>
+        <audio className="audio-element">
+            <source src="/../../../public/sounds/laugh2.mp3"></source>
+        </audio>
+        <audio className="audio-element">
+            <source src="/../../../public/sounds/laugh3.mp3"></source>
+        </audio>
     </>
 }
 
