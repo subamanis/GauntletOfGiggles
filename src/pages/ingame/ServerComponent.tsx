@@ -74,13 +74,13 @@ const ServerComponent: FC<ServerComponentProps> = ({roomId}) => {
     }
 
     const startTimeoutForRoundEnd = () => {
-        setTimeout(() => {
-            changeRoomState(roomId, RoomState.FinishedFailure).then(() => {
-                console.log('Room state changed to finished failure');
-            }).catch(() => {
-                console.log('error while failing');
-            });
-        },60000);
+        // setTimeout(() => {
+        //     changeRoomState(roomId, RoomState.FinishedFailure).then(() => {
+        //         console.log('Room state changed to finished failure');
+        //     }).catch(() => {
+        //         console.log('error while failing');
+        //     });
+        // },60000);
     }
 
     const makeRoomStartPlaying = () => {
