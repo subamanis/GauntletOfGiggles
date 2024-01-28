@@ -1,13 +1,14 @@
 import {FC, useEffect, useRef} from "react";
 import useMultiplayer from "../../multiplayer/useMultiplayer.ts";
-import {
-    GemToImageMap,
-    InfinityStoneColor,
-    infinityStoneColorsInArray,
-    RoomState
-} from "../../multiplayer/infinityTypes.ts";
+import {InfinityStoneColor, infinityStoneColorsInArray, RoomState} from "../../multiplayer/infinityTypes.ts";
 import {randomIntBetween} from "../../utils.ts";
-
+import classnames from "classnames";
+import GlobalStyles from "./../../assets/css/GlobalStyles.module.css"
+import greenGem from "../../../public/gems/GreenStone.png"
+import orangeGem from "../../../public/gems/OrangeStone.png"
+import redGem from "../../../public/gems/RedStone.png"
+import purpleGem from "../../../public/gems/PurpleStone.png"
+import blueGem from "../../../public/gems/BlueStone.png"
 
 interface ServerComponentProps {
     roomId: string;
@@ -100,6 +101,13 @@ const ServerComponent: FC<ServerComponentProps> = ({roomId}) => {
         audioEl.play().then(r => console.log('promise resolve: '+r)).catch(e => console.error(e));
     }
 
+    const colorToStoneMap: Map<InfinityStoneColor, string> = new Map([
+        ["Green", greenGem],
+        ["Orange", orangeGem],
+        ["Red", redGem],
+        ["Purple", purpleGem],
+        ["Blue", blueGem],
+    ]);
 
     useEffect(() => {
         console.log("ServerComponent mounted");
@@ -128,15 +136,29 @@ const ServerComponent: FC<ServerComponentProps> = ({roomId}) => {
     }, [playersPlaying]);
 
     return <>
-        <div style={{color: "white"}}>Game Score: {currentScore}</div>
-        <div style={{color: "yellow"}}>Server Page</div>
-        <button onClick={makeRoomStartPlaying}>Start playing</button>
+        <div className={(classnames(GlobalStyles.flex,GlobalStyles.flex1,))}>
+        {/*<div style={{color: "white"}}>Game Score: {currentScore}</div>*/}
+        {/*<div style={{color: "yellow"}}>Server Page</div>*/}
+            {currentRoomState === RoomState.WaitingForPlayers && <button onClick={makeRoomStartPlaying}>Start playing</button>}
         <audio className="audio-element-inevitable">
             <source src="/../../../public/sounds/IAmInevitable.mp3"></source>
         </audio>
         <audio className="audio-element-near">
             <source src="/../../../public/sounds/TheEndIsNear.mp3"></source>
         </audio>
+            <div className={(classnames(GlobalStyles.flex1))}/>
+            <div className={(classnames(GlobalStyles.flex, GlobalStyles.gap))}>
+                {infinityStoneColorsInArray.filter(stone => stone !== "Yellow").map((color) =>
+                    <div key={color}>
+                        {(currentRoomState === RoomState.WaitingForPlayers && !availablePlayersInRoom.includes(color) ||
+                            (currentRoomState !== RoomState.WaitingForPlayers && playersPlaying.includes(color))) ?
+                            <img src={colorToStoneMap.get(color)} alt="" style={{height: "5em"}}/> :
+                            <div  style={{width: "5em"}}/>}
+                    </div>
+                )}
+            </div>
+
+        </div>
     </>
 }
 

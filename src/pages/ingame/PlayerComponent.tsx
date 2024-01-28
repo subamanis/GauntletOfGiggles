@@ -32,7 +32,7 @@ const gemToPosition = (gem: InfinityStoneColor): GemPosition => {
         case "Yellow":
             return GemPosition.topLeft;
         case "Red":
-            return GemPosition.topRight;
+            return GemPosition.bottomRight;
         case "Blue":
             return GemPosition.bottomLeft;
         case "Orange":
@@ -188,8 +188,8 @@ const PlayerComponent: FC<PlayerComponentProps> = ({roomId, infinityColor}) => {
         audioEl.play().then(r => console.log('promise resolve: '+r)).catch(e => console.error(e));
     }
     const playYourTurnSound = () => {
-        const audioEl = document.getElementsByClassName("audio-element-shining")[0] as HTMLAudioElement;
-        audioEl.play().then(r => console.log('promise resolve: '+r)).catch(e => console.error(e));
+        // const audioEl = document.getElementsByClassName("audio-element-shining")[0] as HTMLAudioElement;
+        // audioEl.play().then(r => console.log('promise resolve: '+r)).catch(e => console.error(e));
     }
 
     return <>
@@ -206,7 +206,6 @@ const PlayerComponent: FC<PlayerComponentProps> = ({roomId, infinityColor}) => {
                 />
             </div>
         </div>
-        <button onClick={playLaughSound}>Play sound</button>
         <audio className="audio-element">
             <source src="/../../../public/sounds/laugh1.mp3"></source>
         </audio>
