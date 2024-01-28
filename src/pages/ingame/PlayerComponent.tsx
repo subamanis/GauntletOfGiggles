@@ -5,10 +5,10 @@ import useMouseTouch from "../../mouse-touch.ts";
 import {InfinityStoneColor} from "../../multiplayer/infinityTypes.ts";
 
 enum MiniGameType {
-    axisMovementX,
-    axisMovementY,
-    touchPoints2,
-    touchPoints3,
+    axisMovementX = 0,
+    axisMovementY = 1,
+    touchPoints2 = 2,
+    touchPoints3 = 3,
 }
 
 const distanceToWin = 3500;

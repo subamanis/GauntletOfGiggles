@@ -1,5 +1,5 @@
 import  {useEffect, useState} from 'react';
-import isMobile from "./utils.ts";
+import {isMobile} from "./utils.ts";
 
 const useMousePosition = () => {
     let lastPositionX = 0;

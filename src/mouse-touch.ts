@@ -1,5 +1,5 @@
 import React from 'react';
-import isMobile from "./utils.ts";
+import {isMobile} from "./utils.ts";
 
 const useMouseTouch = () => {
 
