@@ -15,6 +15,7 @@ const ThanasisTest: FC = () => {
         joinRoom,
         useGetRoomState,
         useGetPlayerPlaying,
+        useGetPlayersPlaying,
         changePlayerScore,
         useGetPlayersScore,
         changeRoomState,
@@ -22,6 +23,7 @@ const ThanasisTest: FC = () => {
         useGetAvailablePlayersInRoom,
     } = useMultiplayer();
     const roomState = useGetRoomState(roomInput!);
+    const playersPlaying = useGetPlayersPlaying(roomInput!);
     const playerPlaying = useGetPlayerPlaying(roomInput!, infinityColour as InfinityStoneColor);
     const totalScore = useGetPlayersScore(roomInput!);
     const availablePlayersInRoom = useGetAvailablePlayersInRoom(roomInput!);
@@ -66,6 +68,9 @@ const ThanasisTest: FC = () => {
                 void changeRoomState(roomInput!, roomStateWrite! as RoomState);
             }}>Change Room State
             </button>
+            <p/>
+            <label>Players Playing</label>
+            <div>{JSON.stringify(playersPlaying)}</div>
             <p/>
             <label>Player Playing</label>
             <div>{JSON.stringify(playerPlaying)}</div>
