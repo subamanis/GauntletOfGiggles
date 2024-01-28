@@ -13,15 +13,33 @@ const GamePage: FC = () => {
     const infinityColor = useMemo(
         () => colorId as InfinityStoneColor,
         [colorId]);
-    const imageName = GemToImageMap[infinityColor];
+    const imageName = "ThanosCartoon";
+    const backgroundSize: string = useMemo(() => {
+        return infinityColor === "Yellow" ? "120% 120%" 
+        : infinityColor === "Red" || infinityColor === "Blue" || infinityColor === "Orange" ? "200% 200%"
+        : "250% 250%" 
+    }, [infinityColor])
 
+    const backgroundPosition: string = useMemo(() => {
+        return infinityColor === "Red" ? "85% 75%" 
+        : infinityColor === "Blue" ? "15% 75%" 
+        : infinityColor === "Orange" ? "75% 50%" 
+        : infinityColor === "Green" ? "55% 100%" 
+        : infinityColor === "Purple" ? "85% 100%" 
+        : "205% 10%" 
+    }, [infinityColor])
+console.log("lianos", backgroundPosition)
     return (
-        <div className={classnames(GamePageStyles.gamePage, GlobalStyles.flex1, GlobalStyles.flex)}>
-            <div className={classnames(GamePageStyles.gamePage, GlobalStyles.flex1)} style={{
-                backgroundSize: "cover",
-                backgroundPositionX: "center",
-                backgroundImage:
-                    `url("/thanos/${imageName}.png")`
+        <div className={classnames(GamePageStyles.gamePage)}>
+            <div className={classnames(GamePageStyles.gamePage)} style={{
+                aspectRatio: 1,
+                // width: "100%",
+                height: "100%",
+                backgroundImage: `url("/thanos/${imageName}.jpg")`,
+                backgroundSize: backgroundSize,
+                backgroundPosition: backgroundPosition,
+                backgroundRepeat: "no-repeat",
+                // backgroundPositionX: "center",
             }}>
                 <div style={{color: "white"}}>Room ID: {roomId}</div>
                 <div style={{color: "white"}}>Color ID: {colorId}</div>
@@ -29,6 +47,11 @@ const GamePage: FC = () => {
                     infinityColor === "Yellow" ? <ServerComponent roomId={roomId!}/> :
                         <PlayerComponent roomId={roomId!} infinityColor={infinityColor}/>
                 }
+                {/* <div className={classnames(GamePageStyles.glowingGemRed)}/>
+                <div className={classnames(GamePageStyles.glowingGemGreen)}/>
+                <div className={classnames(GamePageStyles.glowingGemPurple)}/>
+                <div className={classnames(GamePageStyles.glowingGemBlue)}/>
+                <div className={classnames(GamePageStyles.glowingGemOrange)}/> */}
             </div>
         </div>
     )

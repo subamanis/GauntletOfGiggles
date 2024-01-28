@@ -12,6 +12,7 @@ import ThanasisTest from "./Thanasis.tsx";
 import SessionRoom from './pages/sessionroom/SessionRoom.tsx';
 import GamePage from "./pages/ingame/GamePage.tsx";
 import './index.css'
+import GauntletTest from './pages/gauntlettest/GauntletTest.tsx';
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "/join-room/:roomId/color/:colorId",
         element: <GamePage />,
+      },
+      {
+        path: "/gauntlet-test",
+        element: <GauntletTest />,
       },
       {
         path: "/mouse-event-test",
