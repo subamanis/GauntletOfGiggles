@@ -20,7 +20,52 @@ interface PlayerComponentProps {
     infinityColor: InfinityStoneColor;
 }
 
-const PlayerComponent:FC<PlayerComponentProps> = ({roomId,infinityColor}) => {
+enum GemPosition {
+    topLeft,
+    topRight,
+    bottomLeft,
+    bottomRight,
+}
+
+const gemToPosition = (gem: InfinityStoneColor): GemPosition => {
+    switch (gem) {
+        case "Yellow":
+            return GemPosition.topLeft;
+        case "Red":
+            return GemPosition.topRight;
+        case "Blue":
+            return GemPosition.bottomLeft;
+        case "Orange":
+            return GemPosition.bottomRight;
+        case "Green":
+            return GemPosition.bottomLeft;
+        case "Purple":
+            return GemPosition.bottomRight;
+    }
+}
+
+const gemPositionToCss = (gemPosition: GemPosition) => {
+    switch (gemPosition) {
+        case GemPosition.topLeft:
+            return {
+                width: 50, height: 50, left: 20, top: 70
+            };
+        case GemPosition.topRight:
+            return {
+                width: 50, height: 50, right: 20, top: 70
+            };
+        case GemPosition.bottomLeft:
+            return {
+                width: 50, height: 50, left: 20, bottom: 40
+            };
+        case GemPosition.bottomRight:
+            return {
+                width: 50, height: 50, right: 20, bottom: 40
+            };
+    }
+}
+
+const PlayerComponent: FC<PlayerComponentProps> = ({roomId, infinityColor}) => {
     const {useGetPlayersScore, useGetPlayerPlaying, changePlayerScore, changePlayerPlaying} = useMultiplayer()
     const currentScore = useGetPlayersScore(roomId!);
     const isCurrentPlayerPlaying = useGetPlayerPlaying(roomId!, infinityColor);
@@ -148,20 +193,19 @@ const PlayerComponent:FC<PlayerComponentProps> = ({roomId,infinityColor}) => {
     }
 
     return <>
-        <div style={{color: "white"}}>Score: {currentScore}</div>
-        <div style={{color: "white"}}>Playing: {isCurrentPlayerPlaying ? "true" : "false"}</div>
-        <div style={{color: "white"}}>Mouse X: {mousePosition.x}</div>
-        <div style={{color: "white"}}>Mouse Y: {mousePosition.y}</div>
-        <div style={{color: "white"}}>Mouse lastX: {mousePosition.lastX}</div>
-        <div style={{color: "white"}}>Mouse lastY: {mousePosition.lastY}</div>
-        <div style={{color: "white"}}>Mouse Touches : {mouseTouch.touches}</div>
-        <div style={{color: "white"}}>Distance X : {distanceForThisActionX}</div>
-        <div style={{color: "white"}}>Distance Y : {distanceForThisActionY}</div>
-        <div style={{color: "white"}}>Starting X : {startingPosition.x}</div>
-        <div style={{color: "white"}}>Starting Y : {startingPosition.y}</div>
-        <div style={{color: "white"}}>Drift Offset X : {driftOffsetX}</div>
-        <div style={{color: "white"}}>Drift Offset Y : {driftOffsetY}</div>
-        <div style={{color: "yellow", fontSize: 22}}>Reason : {playerLostReason}</div>
+        <div>
+            <div style={{
+                ...gemPositionToCss(gemToPosition(infinityColor)),
+                position: "fixed",
+            }}>
+                <img
+                    style={{
+                        height: "80px", width: "67px",
+                    }}
+                    src={`/gems/${infinityColor}Stone.png`}
+                />
+            </div>
+        </div>
         <button onClick={playLaughSound}>Play sound</button>
         <audio className="audio-element">
             <source src="/../../../public/sounds/laugh1.mp3"></source>
@@ -175,6 +219,21 @@ const PlayerComponent:FC<PlayerComponentProps> = ({roomId,infinityColor}) => {
         <audio className="audio-element-shining">
             <source src="/../../../public/sounds/GemShining.mp3"></source>
         </audio>
+        {/*<div style={{color: "white"}}>Score: {currentScore}</div>*/}
+        {/*<div style={{color: "white"}}>Playing: {isCurrentPlayerPlaying ? "true" : "false"}</div>*/}
+        {/*<div style={{color: "white"}}>Mouse X: {mousePosition.x}</div>*/}
+        {/*<div style={{color: "white"}}>Mouse Y: {mousePosition.y}</div>*/}
+        {/*<div style={{color: "white"}}>Mouse lastX: {mousePosition.lastX}</div>*/}
+        {/*<div style={{color: "white"}}>Mouse lastY: {mousePosition.lastY}</div>*/}
+        {/*<div style={{color: "white"}}>Mouse Touches : {mouseTouch.touches}</div>*/}
+        {/*<div style={{color: "white"}}>Distance X : {distanceForThisActionX}</div>*/}
+        {/*<div style={{color: "white"}}>Distance Y : {distanceForThisActionY}</div>*/}
+        {/*<div style={{color: "white"}}>Starting X : {startingPosition.x}</div>*/}
+        {/*<div style={{color: "white"}}>Starting Y : {startingPosition.y}</div>*/}
+        {/*<div style={{color: "white"}}>Drift Offset X : {driftOffsetX}</div>*/}
+        {/*<div style={{color: "white"}}>Drift Offset Y : {driftOffsetY}</div>*/}
+        {/*<div style={{color: "yellow", fontSize: 22}}>Reason : {playerLostReason}</div>*/}
+
     </>
 }
 
