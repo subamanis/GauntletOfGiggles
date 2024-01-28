@@ -50,6 +50,7 @@ const PlayerComponent:FC<PlayerComponentProps> = ({roomId,infinityColor}) => {
 
     useEffect(() => {
         if (isCurrentPlayerPlaying) {
+            playYourTurnSound();
             setDistanceForThisActionX(0);
             setDistanceForThisActionY(0);
         }
@@ -141,6 +142,10 @@ const PlayerComponent:FC<PlayerComponentProps> = ({roomId,infinityColor}) => {
         console.log('found audio element: ', audioEl);
         audioEl.play().then(r => console.log('promise resolve: '+r)).catch(e => console.error(e));
     }
+    const playYourTurnSound = () => {
+        const audioEl = document.getElementsByClassName("audio-element-shining")[0] as HTMLAudioElement;
+        audioEl.play().then(r => console.log('promise resolve: '+r)).catch(e => console.error(e));
+    }
 
     return <>
         <div style={{color: "white"}}>Score: {currentScore}</div>
@@ -166,6 +171,9 @@ const PlayerComponent:FC<PlayerComponentProps> = ({roomId,infinityColor}) => {
         </audio>
         <audio className="audio-element">
             <source src="/../../../public/sounds/laugh3.mp3"></source>
+        </audio>
+        <audio className="audio-element-shining">
+            <source src="/../../../public/sounds/GemShining.mp3"></source>
         </audio>
     </>
 }

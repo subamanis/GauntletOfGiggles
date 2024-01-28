@@ -91,6 +91,16 @@ const ServerComponent: FC<ServerComponentProps> = ({roomId}) => {
         });
     }
 
+    const playLoseSound = () => {
+        const audioEl = document.getElementsByClassName("audio-element-inevitable")[0] as HTMLAudioElement;
+        audioEl.play().then(r => console.log('promise resolve: '+r)).catch(e => console.error(e));
+    }
+    const playStartGameSound = () => {
+        const audioEl = document.getElementsByClassName("audio-element-near")[0] as HTMLAudioElement;
+        audioEl.play().then(r => console.log('promise resolve: '+r)).catch(e => console.error(e));
+    }
+
+
     useEffect(() => {
         console.log("ServerComponent mounted");
         console.log('rand: ', randomIntBetween(0, 6));
@@ -99,6 +109,7 @@ const ServerComponent: FC<ServerComponentProps> = ({roomId}) => {
         if (currentRoomState === RoomState.InProgress) {
             startTimeoutToSelectNextPlayer();
             startTimeoutForRoundEnd();
+            playStartGameSound();
         }
     }, [currentRoomState]);
     useEffect(() => {
@@ -106,6 +117,7 @@ const ServerComponent: FC<ServerComponentProps> = ({roomId}) => {
             console.log('YOU WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOON');
         } else if (currentScore < 30) {
             console.log('LOSE LOSE LOSE LOSE LOSE LOSE LOSE LOSE LOSE');
+            playLoseSound();
         }
     }, [currentScore]);
     useEffect(() => {
@@ -119,6 +131,12 @@ const ServerComponent: FC<ServerComponentProps> = ({roomId}) => {
         <div style={{color: "white"}}>Game Score: {currentScore}</div>
         <div style={{color: "yellow"}}>Server Page</div>
         <button onClick={makeRoomStartPlaying}>Start playing</button>
+        <audio className="audio-element-inevitable">
+            <source src="/../../../public/sounds/IAmInevitable.mp3"></source>
+        </audio>
+        <audio className="audio-element-near">
+            <source src="/../../../public/sounds/TheEndIsNear.mp3"></source>
+        </audio>
     </>
 }
 
