@@ -23,44 +23,55 @@ const ServerComponent: FC<ServerComponentProps> = ({roomId}) => {
     const currentRoomState = useGetRoomState(roomId);
     const availablePlayersInRoomRef = useRef(availablePlayersInRoom);
     const playersPlayingRef = useRef(playersPlaying);
+    const timeForRoundMs = 3000;
 
     const chooseNextPlayer = () => {
         let notFoundPlayer = true;
         let chosenPlayer: InfinityStoneColor | null = null;
         while (notFoundPlayer) {
-            console.log('available players: ', availablePlayersInRoomRef.current);
-            console.log('playing players: ',playersPlaying);
-
             const notPlayingPlayers = infinityStoneColorsInArray
                 .filter(color => !playersPlaying.includes(color) && !availablePlayersInRoomRef.current.includes(color));
-            console.log('notPlayingPlayers players: '+notPlayingPlayers);
             if (notPlayingPlayers.length === 0) {
                 return;
             }
 
-            console.log('max rand: '+(notPlayingPlayers.length - 1));
             const randomInt = randomIntBetween(0, notPlayingPlayers.length - 1);
-            console.log('randomInt: '+randomInt);
             chosenPlayer = infinityStoneColorsInArray[randomInt]
             if (chosenPlayer.toLowerCase() === 'yellow'/*mind stone - server*/) {
                 continue;
             }
             notFoundPlayer = false;
+            console.log('available players (not in room): ', availablePlayersInRoomRef.current);
+            console.log('playing players (currently lit stones): ',playersPlaying);
+            console.log('notPlayingPlayers players (in room but not lit): '+notPlayingPlayers);
         }
+        console.log('Chosen player: '+chosenPlayer);
+
         changePlayerPlaying(roomId, chosenPlayer!, true).then(() => {
-            console.log('Chosen player changed to '+chosenPlayer);
+            // console.log('Chosen player changed to '+chosenPlayer);
         }).catch(() => {
             console.log('Error changing chosen player');
         });
+
+        setTimeout((chosenPlayer: InfinityStoneColor) => {
+            console.log('Stopping player round: '+chosenPlayer);
+            changePlayerPlaying(roomId, chosenPlayer, false).then(() => {
+                console.log(chosenPlayer+' player not playing any more');
+            }).catch(() => {
+                console.log('Error when stopping player round');
+            });
+        }, timeForRoundMs, chosenPlayer);
     }
 
     const startTimeoutToSelectNextPlayer = () => {
-        const timeoutDuration = randomIntBetween(500, 4000);
-        console.log('Timeout ms chosen: '+timeoutDuration);
-        setTimeout(() => {
-            chooseNextPlayer();
-            startTimeoutToSelectNextPlayer();
-        }, timeoutDuration);
+        if (currentRoomState === RoomState.InProgress) {
+            const timeoutDuration = randomIntBetween(500, 4000);
+            console.log('Timeout ms chosen: '+timeoutDuration);
+            setTimeout(() => {
+                chooseNextPlayer();
+                startTimeoutToSelectNextPlayer();
+            }, timeoutDuration);
+        }
     }
 
     const makeRoomStartPlaying = () => {
