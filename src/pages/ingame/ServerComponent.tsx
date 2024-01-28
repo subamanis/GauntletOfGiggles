@@ -14,7 +14,7 @@ interface ServerComponentProps {
 }
 
 const ServerComponent: FC<ServerComponentProps> = ({roomId}) => {
-    const {useGetPlayersScore, useGetPlayersPlaying, useGetRoomState,
+    const {useGetPlayersScore, useGetPlayersPlaying, useGetRoomState, changePlayerScore,
         changePlayerPlaying, useGetAvailablePlayersInRoom, changeRoomState}
         = useMultiplayer();
     const currentScore = useGetPlayersScore(roomId);
@@ -41,24 +41,23 @@ const ServerComponent: FC<ServerComponentProps> = ({roomId}) => {
                 continue;
             }
             notFoundPlayer = false;
-            console.log('available players (not in room): ', availablePlayersInRoomRef.current);
             console.log('playing players (currently lit stones): ',playersPlaying);
-            console.log('notPlayingPlayers players (in room but not lit): '+notPlayingPlayers);
+            console.log('notPlayingPlayers (in room but not lit): '+notPlayingPlayers);
         }
-        console.log('Chosen player: '+chosenPlayer);
 
         changePlayerPlaying(roomId, chosenPlayer!, true).then(() => {
-            // console.log('Chosen player changed to '+chosenPlayer);
-        }).catch(() => {
-            console.log('Error changing chosen player');
+            console.log('Chosen player changed to '+chosenPlayer);
         });
 
         setTimeout((chosenPlayer: InfinityStoneColor) => {
             console.log('Stopping player round: '+chosenPlayer);
+            if (playersPlayingRef.current.includes(chosenPlayer)) {
+                changePlayerScore(roomId, chosenPlayer, -1).then(() => {
+                    console.log('Removed 1 point from '+chosenPlayer);
+                });
+            }
             changePlayerPlaying(roomId, chosenPlayer, false).then(() => {
                 console.log(chosenPlayer+' player not playing any more');
-            }).catch(() => {
-                console.log('Error when stopping player round');
             });
         }, timeForRoundMs, chosenPlayer);
     }
@@ -72,6 +71,16 @@ const ServerComponent: FC<ServerComponentProps> = ({roomId}) => {
                 startTimeoutToSelectNextPlayer();
             }, timeoutDuration);
         }
+    }
+
+    const startTimeoutForRoundEnd = () => {
+        setTimeout(() => {
+            changeRoomState(roomId, RoomState.FinishedFailure).then(() => {
+                console.log('Room state changed to finished failure');
+            }).catch(() => {
+                console.log('error while failing');
+            });
+        },60000);
     }
 
     const makeRoomStartPlaying = () => {
@@ -89,8 +98,16 @@ const ServerComponent: FC<ServerComponentProps> = ({roomId}) => {
     useEffect(() => {
         if (currentRoomState === RoomState.InProgress) {
             startTimeoutToSelectNextPlayer();
+            startTimeoutForRoundEnd();
         }
     }, [currentRoomState]);
+    useEffect(() => {
+        if (currentScore > 30) {
+            console.log('YOU WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOON');
+        } else if (currentScore < 30) {
+            console.log('LOSE LOSE LOSE LOSE LOSE LOSE LOSE LOSE LOSE');
+        }
+    }, [currentScore]);
     useEffect(() => {
         availablePlayersInRoomRef.current = availablePlayersInRoom;
     }, [availablePlayersInRoom]);
