@@ -53,9 +53,9 @@ const ServerComponent: FC<ServerComponentProps> = ({roomId}) => {
         setTimeout((chosenPlayer: InfinityStoneColor) => {
             console.log('Stopping player round: '+chosenPlayer);
             if (playersPlayingRef.current.includes(chosenPlayer)) {
-                changePlayerScore(roomId, chosenPlayer, -1).then(() => {
-                    console.log('Removed 1 point from '+chosenPlayer);
-                });
+                // changePlayerScore(roomId, chosenPlayer, -1).then(() => {
+                //     console.log('Removed 1 point from '+chosenPlayer);
+                // });
             }
             changePlayerPlaying(roomId, chosenPlayer, false).then(() => {
                 console.log(chosenPlayer+' player not playing any more');
@@ -136,16 +136,18 @@ const ServerComponent: FC<ServerComponentProps> = ({roomId}) => {
     }, [playersPlaying]);
 
     return <>
-        <div className={(classnames(GlobalStyles.flex,GlobalStyles.flex1,))}>
-        {/*<div style={{color: "white"}}>Game Score: {currentScore}</div>*/}
-        {/*<div style={{color: "yellow"}}>Server Page</div>*/}
-            {currentRoomState === RoomState.WaitingForPlayers && <button onClick={makeRoomStartPlaying}>Start playing</button>}
-        <audio className="audio-element-inevitable">
-            <source src="/../../../public/sounds/IAmInevitable.mp3"></source>
-        </audio>
-        <audio className="audio-element-near">
-            <source src="/../../../public/sounds/TheEndIsNear.mp3"></source>
-        </audio>
+        <div style={{color: "white"}}>Score: {currentScore}</div>
+        <div className={(classnames(GlobalStyles.flex, GlobalStyles.flex1,))}>
+            {/*<div style={{color: "white"}}>Game Score: {currentScore}</div>*/}
+            {/*<div style={{color: "yellow"}}>Server Page</div>*/}
+            {currentRoomState === RoomState.WaitingForPlayers &&
+                <button onClick={makeRoomStartPlaying}>Start playing</button>}
+            <audio className="audio-element-inevitable">
+                <source src="/../../../public/sounds/IAmInevitable.mp3"></source>
+            </audio>
+            <audio className="audio-element-near">
+                <source src="/../../../public/sounds/TheEndIsNear.mp3"></source>
+            </audio>
             <div className={(classnames(GlobalStyles.flex1))}/>
             <div className={(classnames(GlobalStyles.flex, GlobalStyles.gap))}>
                 {infinityStoneColorsInArray.filter(stone => stone !== "Yellow").map((color) =>
@@ -153,7 +155,7 @@ const ServerComponent: FC<ServerComponentProps> = ({roomId}) => {
                         {(currentRoomState === RoomState.WaitingForPlayers && !availablePlayersInRoom.includes(color) ||
                             (currentRoomState !== RoomState.WaitingForPlayers && playersPlaying.includes(color))) ?
                             <img src={colorToStoneMap.get(color)} alt="" style={{height: "5em"}}/> :
-                            <div  style={{width: "5em"}}/>}
+                            <div style={{width: "5em"}}/>}
                     </div>
                 )}
             </div>

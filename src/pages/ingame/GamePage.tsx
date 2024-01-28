@@ -1,12 +1,16 @@
-import {FC, useEffect, useMemo, useState} from "react";
+import {FC, useEffect, useMemo} from "react";
 import {useParams} from "react-router-dom";
 import GamePageStyles from "./GamePage.module.css";
-import GlobalStyles from "./../../assets/css/GlobalStyles.module.css"
 import classnames from "classnames";
-import {GemToImageMap, InfinityStoneColor} from "../../multiplayer/infinityTypes.ts";
+import {InfinityStoneColor} from "../../multiplayer/infinityTypes.ts";
 import ServerComponent from "./ServerComponent.tsx";
 import PlayerComponent from "./PlayerComponent.tsx";
 import useMultiplayer from "../../multiplayer/useMultiplayer.ts";
+import thanos0 from "../../../public/thanos/Thanos0.png";
+import thanos1 from "../../../public/thanos/Thanos1.png";
+import thanos2 from "../../../public/thanos/Thanos2.png";
+import thanos3 from "../../../public/thanos/Thanos3.png";
+import thanos4 from "../../../public/thanos/Thanos4.png";
 
 
 const GamePage: FC = () => {
@@ -14,7 +18,7 @@ const GamePage: FC = () => {
     const infinityColor = useMemo(
         () => colorId as InfinityStoneColor,
         [colorId]);
-    const imageName = "Thanos";
+    // const imageName = "Thanos";
     const backgroundSize: string = useMemo(() => {
         return infinityColor === "Yellow" ? "120% 120%"
             : infinityColor === "Red" || infinityColor === "Blue" || infinityColor === "Orange" ? "200% 200%"
@@ -23,38 +27,38 @@ const GamePage: FC = () => {
 
     const {useGetPlayersScore} = useMultiplayer();
     const playersScore = useGetPlayersScore(roomId!);
-    const imageToUse = useMemo(() => {
+    const currentThanosImg = useMemo(() => {
         if(infinityColor !== "Yellow") {
-            return 1;
+            return thanos1;
         }
-        if (playersScore > -5 && playersScore < 5) {
-            return 1; //normal
+        if (playersScore > -5 && playersScore < 40) {
+            return thanos1; //normal
         } else if (playersScore <= -5) {
-            return 0; // angry
-        } else if (playersScore <= 10) {
-            return 2; // happy
-        } else if (playersScore <= 20) {
-            return 3; // very happy
+            return thanos0; // angry
+        } else if (playersScore <= 180) {
+            return thanos2; // happy
+        } else if (playersScore <= 350) {
+            return thanos3; // very happy
         }
-        return 4; // super happy
+        return thanos4; // super happy
 
     }, [playersScore]);
 
-    useEffect(() => {
-        const image = new Image();
-        image.src = `url(/thanos/Thanos0.png)`;
-        image.src = `url(/thanos/Thanos1.png)`;
-        image.src = `url(/thanos/Thanos2.png)`;
-        image.src = `url(/thanos/Thanos3.png)`;
-        image.src = `url(/thanos/Thanos4.png)`;
-    }, []);
+    // useEffect(() => {
+    //     const image = new Image();
+    //     image.src = `url(/thanos/Thanos0.png)`;
+    //     image.src = `url(/thanos/Thanos1.png)`;
+    //     image.src = `url(/thanos/Thanos2.png)`;
+    //     image.src = `url(/thanos/Thanos3.png)`;
+    //     image.src = `url(/thanos/Thanos4.png)`;
+    // }, []);
 
 
     const backgroundPosition: string = useMemo(() => {
-        return infinityColor === "Red" ? "85% 75%"
+        return infinityColor === "Red" ? "105% 60%"
             : infinityColor === "Blue" ? "15% 75%"
-                : infinityColor === "Orange" ? "75% 50%"
-                    : infinityColor === "Green" ? "55% 100%"
+                : infinityColor === "Orange" ? "75% 60%"
+                    : infinityColor === "Green" ? "52% 100%"
                         : infinityColor === "Purple" ? "85% 100%"
                             : "100% 10%"
     }, [infinityColor])
@@ -65,7 +69,9 @@ const GamePage: FC = () => {
                 aspectRatio: 1,
                 // width: "100%",
                 height: "100%",
-                backgroundImage: `url("/thanos/${imageName}${imageToUse}.png")`,
+                // backgroundImage: `url("/thanos/${imageName}${imageToUse}.png")`,
+                backgroundImage: `url(${currentThanosImg})`,
+                backgroundColor: "rgb(142, 86, 177)",
                 backgroundSize: backgroundSize,
                 backgroundPosition: backgroundPosition,
                 backgroundRepeat: "no-repeat",

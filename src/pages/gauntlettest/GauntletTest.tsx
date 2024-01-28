@@ -1,6 +1,5 @@
 import classnames from "classnames"
 import GlobalStyles from "../../assets/css/GlobalStyles.module.css"
-import {GemToImageMap, InfinityStoneColor} from "../../multiplayer/infinityTypes.ts";
 
 const GauntletTest = () => {
     const imageName = "ThanosCartoon";

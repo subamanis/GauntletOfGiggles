@@ -66,8 +66,7 @@ const gemPositionToCss = (gemPosition: GemPosition) => {
 }
 
 const PlayerComponent: FC<PlayerComponentProps> = ({roomId, infinityColor}) => {
-    const {useGetPlayersScore, useGetPlayerPlaying, changePlayerScore, changePlayerPlaying} = useMultiplayer()
-    const currentScore = useGetPlayersScore(roomId!);
+    const {useGetPlayerPlaying, changePlayerScore, changePlayerPlaying} = useMultiplayer()
     const isCurrentPlayerPlaying = useGetPlayerPlaying(roomId!, infinityColor);
     const mousePosition = useMousePosition();
     const mouseTouch = useMouseTouch();
@@ -75,13 +74,13 @@ const PlayerComponent: FC<PlayerComponentProps> = ({roomId, infinityColor}) => {
         x: null,
         y: null
     });
-    const [currentMiniGame, setCurrentMiniGame] = useState(MiniGameType.axisMovementY);
+    const [currentMiniGame] = useState(MiniGameType.axisMovementY);
     const [isFirstTouch, setIsFirstTouch] = useState(false);
 
     const [distanceForThisActionX, setDistanceForThisActionX] = useState<number>(0)
     const [distanceForThisActionY, setDistanceForThisActionY] = useState<number>(0)
     const [driftOffsetX, setDriftOffsetX] = useState<number>(0)
-    const [driftOffsetY, setDriftOffsetY] = useState<number>(0)
+    // const [driftOffsetY, setDriftOffsetY] = useState<number>(0)
     const [playerLostReason, setPlayerLostReason] = useState<string | null>(null)
     const [wonThisRound, setWonThisRound] = useState(false);
 
@@ -139,7 +138,7 @@ const PlayerComponent: FC<PlayerComponentProps> = ({roomId, infinityColor}) => {
     useEffect(() => {
         if (wonThisRound) {
             console.log("Won this round: ", wonThisRound);
-            void changePlayerScore(roomId!, infinityColor, 1);
+            // void changePlayerScore(roomId!, infinityColor, 3);
             void changePlayerPlaying(roomId!, infinityColor, false);
             // resetPlayingState();
         }
@@ -148,7 +147,7 @@ const PlayerComponent: FC<PlayerComponentProps> = ({roomId, infinityColor}) => {
     useEffect(() => {
         if (playerLostReason) {
             console.log("Player lost reason: ", playerLostReason);
-            void changePlayerScore(roomId!, infinityColor, -1);
+            void changePlayerScore(roomId!, infinityColor, 1);
             void changePlayerPlaying(roomId!, infinityColor, false);
             // resetPlayingState();
         }
@@ -176,7 +175,7 @@ const PlayerComponent: FC<PlayerComponentProps> = ({roomId, infinityColor}) => {
             }
             if (distanceY > 0) {
                 setDistanceForThisActionY(prevState => prevState + distanceY);
-                setDriftOffsetY(Math.abs(mousePosition.y - startingPosition.y!));
+                // setDriftOffsetY(Math.abs(mousePosition.y - startingPosition.y!));
             }
         }
     }, [mousePosition, mouseTouch.touches, startingPosition.x, startingPosition.y]);
